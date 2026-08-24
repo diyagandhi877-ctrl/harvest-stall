@@ -1,0 +1,1269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Harvest Stall — fresh produce, priced by weight</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/extend.css">
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <div class="brand"><span class="mark">🌿</span>Harvest Stall</div>
+    <div class="search">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input id="searchInput" type="text" placeholder="Search for mangoes, spinach, ginger…">
+    </div>
+    <div class="chips" id="filterChips">
+      <button class="chip active" data-filter="all">All</button>
+      <button class="chip" data-filter="fruit">Fruits</button>
+      <button class="chip" data-filter="veg">Vegetables</button>
+    </div>
+    <div class="nav-utility">
+      <select class="lang-select" id="langSelect" title="Language">
+        <option value="en">EN</option>
+        <option value="hi">हिं</option>
+        <option value="mr">मर</option>
+      </select>
+      <button class="icon-btn" id="themeToggle" title="Toggle dark mode">🌙</button>
+      <button class="icon-btn" id="wishlistBtn" title="Wishlist">
+        ♡<span class="wishlist-badge hidden" id="wishlistCount">0</span>
+      </button>
+    </div>
+    <a class="role-link hidden" id="dashboardLink" href="farmer-dashboard.html">📊 Dashboard</a>
+    <button class="add-btn hidden" id="openAdd">+ Add produce</button>
+    <button class="account-btn" id="openAuth" data-i18n="nav.login">👤 Login</button>
+    <button class="user-chip hidden" id="userChip">
+      <span class="avatar" id="userAvatar">?</span>
+      <span id="userName">Account</span>
+    </button>
+    <button class="cart-btn" id="cartBtn">
+      🧺 Cart <span class="cart-badge" id="cartCount">0</span>
+    </button>
+  </div>
+</header>
+
+<div class="wrap">
+  <section class="hero hero-photo">
+    <p class="eyebrow" data-i18n="hero.eyebrow">Fresh from the farm · priced by weight</p>
+    <h1><span data-i18n="hero.title1">Whatever's</span><br><em data-i18n="hero.title2">in season, today.</em></h1>
+    <p data-i18n="hero.sub">Fresh fruit and vegetables from growers near you — nutrition you can see, prices you can trust, delivered by weight.</p>
+    <div class="hero-cta">
+      <button class="btn-solid" id="heroShopBtn" data-i18n="hero.shopNow">Shop today's stock</button>
+      <button class="btn-ghost-light" id="heroFarmerBtn" data-i18n="hero.becomeFarmer">Sell on Harvest Stall</button>
+    </div>
+    <div class="hero-stats">
+      <div><b id="statCount">0</b><span>Items in stock</span></div>
+      <div><b id="statFruit">0</b><span>Fruits</span></div>
+      <div><b id="statVeg">0</b><span>Vegetables</span></div>
+    </div>
+  </section>
+
+  <div class="section-head">
+    <h2 data-i18n="stock.title">Today's stock</h2>
+    <div class="sort">
+      Sort by
+      <select id="sortSelect">
+        <option value="name">Name (A–Z)</option>
+        <option value="price-asc">Price: low to high</option>
+        <option value="price-desc">Price: high to low</option>
+        <option value="calories">Calories</option>
+        <option value="newest">Newest</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <!-- Pricing section -->
+  <section class="pricing-section" id="pricingSection">
+    <div class="section-head">
+      <div>
+        <h2 data-i18n="pricing.title">Pricing at a glance</h2>
+        <p class="p-origin" data-i18n="pricing.sub" style="margin-top:4px;">Every item, three weights, honest prices.</p>
+      </div>
+    </div>
+    <div class="pricing-grid" id="pricingGrid"></div>
+  </section>
+
+  <!-- Contact section -->
+  <section class="contact-section" id="contactSection">
+    <div class="section-head">
+      <div>
+        <h2 data-i18n="contact.title">Get in touch</h2>
+        <p class="p-origin" data-i18n="contact.sub" style="margin-top:4px;">Questions about an order, a delivery, or joining as a farmer — we're here.</p>
+      </div>
+    </div>
+    <div class="contact-grid">
+      <div class="contact-card">
+        <h3 data-i18n="contact.formTitle">Send us a message</h3>
+        <form id="contactForm" class="contact-form-grid" style="margin-top:14px;">
+          <div>
+            <label class="form-label" data-i18n="contact.name">Your name</label>
+            <input class="form-input" type="text" id="cfName" required>
+          </div>
+          <div>
+            <label class="form-label" data-i18n="contact.email">Email</label>
+            <input class="form-input" type="email" id="cfEmail">
+          </div>
+          <div>
+            <label class="form-label" data-i18n="contact.phone">Phone</label>
+            <input class="form-input" type="text" id="cfPhone">
+          </div>
+          <div>
+            <label class="form-label">Subject</label>
+            <input class="form-input" type="text" id="cfSubject">
+          </div>
+          <div class="full">
+            <label class="form-label" data-i18n="contact.message">Message</label>
+            <textarea class="form-textarea" id="cfMessage" required></textarea>
+          </div>
+          <div class="full">
+            <button type="submit" class="btn-solid" data-i18n="contact.send">Send message</button>
+          </div>
+        </form>
+      </div>
+      <div class="contact-card">
+        <h3>Harvest Stall HQ</h3>
+        <div class="contact-info-list">
+          <div class="contact-info-item">
+            <span class="ci-icon">📍</span>
+            <div><b>Store address</b>Gangapur Road, Nashik, Maharashtra 422013</div>
+          </div>
+          <div class="contact-info-item">
+            <span class="ci-icon">📞</span>
+            <div><b>Phone</b>+91 98765 43210</div>
+          </div>
+          <div class="contact-info-item">
+            <span class="ci-icon">✉️</span>
+            <div><b>Email</b>hello@harveststall.test</div>
+          </div>
+        </div>
+        <a class="whatsapp-btn" href="https://wa.me/919876543210" target="_blank" rel="noopener">💬 Chat on WhatsApp</a>
+        <div class="social-row">
+          <a href="#" title="Instagram">📷</a>
+          <a href="#" title="Facebook">📘</a>
+          <a href="#" title="Twitter / X">🐦</a>
+        </div>
+        <div class="map-embed">
+          <iframe loading="lazy" src="https://www.google.com/maps?q=Nashik,Maharashtra&output=embed"></iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <div class="footer-brand"><span class="mark">🌿</span>Harvest Stall</div>
+        <p style="margin-top:12px; font-size:0.86rem; color:var(--ink-soft); max-width:34ch;" data-i18n="footer.aboutText">A marketplace connecting local farmers directly with your kitchen — fresh produce, fair prices, priced honestly by weight.</p>
+      </div>
+      <div class="footer-col">
+        <h4 data-i18n="footer.company">Company</h4>
+        <ul>
+          <li><a href="#" data-i18n="footer.about">About</a></li>
+          <li><a href="#contactSection" data-i18n="footer.contact">Contact</a></li>
+          <li><a href="#" id="footerFaqLink" data-i18n="footer.faq">FAQ</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4 data-i18n="footer.legal">Legal</h4>
+        <ul>
+          <li><a href="#" id="footerPrivacyLink" data-i18n="footer.privacy">Privacy Policy</a></li>
+          <li><a href="#" id="footerTermsLink" data-i18n="footer.terms">Terms &amp; Conditions</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Language</h4>
+        <select class="lang-select" id="langSelectFooter" style="width:100%;">
+          <option value="en">English</option>
+          <option value="hi">हिंदी</option>
+          <option value="mr">मराठी</option>
+        </select>
+        <div class="social-row" style="margin-top:16px;">
+          <a href="#" title="Instagram">📷</a>
+          <a href="#" title="Facebook">📘</a>
+          <a href="#" title="Twitter / X">🐦</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Harvest Stall. <span data-i18n="footer.rights">All rights reserved.</span></span>
+      <span>Made for local farmers 🌾</span>
+    </div>
+  </div>
+</footer>
+
+<!-- Auth Panel -->
+<div class="overlay" id="authOverlay">
+  <div class="auth-panel">
+    <button class="close-x" id="closeAuth">✕</button>
+    <p class="eyebrow">Harvest Stall account</p>
+    <h2 id="authHeadline">Welcome back</h2>
+    <p class="sub">Log in to save your cart and reorder faster.</p>
+
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabLogin">Login</button>
+      <button class="auth-tab" id="tabSignup">Sign up</button>
+    </div>
+
+    <!-- Login view -->
+    <div class="auth-view" id="loginView">
+      <form id="loginForm" novalidate>
+        <div class="auth-field">
+          <label for="loginId">Email or mobile number</label>
+          <input type="text" id="loginId" placeholder="you@example.com">
+          <div class="field-error" id="loginIdError"></div>
+        </div>
+        <div class="auth-field">
+          <label for="loginPass">Password</label>
+          <input type="password" id="loginPass" placeholder="Enter password">
+          <button type="button" class="toggle-pass" data-target="loginPass">Show</button>
+          <div class="field-error" id="loginPassError"></div>
+        </div>
+        <div class="auth-row-between">
+          <label class="auth-remember">
+            <input type="checkbox" id="rememberMe">
+            Remember me
+          </label>
+          <a href="#" class="auth-link" id="forgotLink">Forgot password?</a>
+        </div>
+        <button type="submit" class="btn-solid full">Login</button>
+      </form>
+
+      <div class="auth-or">Or</div>
+      <button type="button" class="btn-google" id="googleBtn">
+        <svg width="17" height="17" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.92c1.7-1.57 2.68-3.88 2.68-6.62z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.92-2.26c-.81.54-1.85.87-3.04.87-2.34 0-4.32-1.58-5.03-3.7H.95v2.33A9 9 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.97 10.73A5.4 5.4 0 0 1 3.68 9c0-.6.1-1.19.29-1.73V4.94H.95A9 9 0 0 0 0 9c0 1.45.35 2.83.95 4.06l3.02-2.33z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.51.45 3.44 1.35l2.59-2.59C13.46.89 11.43 0 9 0A9 9 0 0 0 .95 4.94l3.02 2.33C4.68 5.16 6.66 3.58 9 3.58z"/></svg>
+        Continue with Google
+      </button>
+    </div>
+
+    <!-- Signup view -->
+    <div class="auth-view hidden" id="signupView">
+      <form id="signupForm" novalidate>
+        <div class="auth-field">
+          <label>I am signing up as</label>
+          <div class="tabs-row" style="margin:6px 0 0;">
+            <button type="button" class="role-choice active" id="roleCustomerBtn" data-role="customer">🧺 Customer</button>
+            <button type="button" class="role-choice" id="roleFarmerBtn" data-role="farmer">🌾 Farmer</button>
+          </div>
+        </div>
+        <div class="auth-field">
+          <label for="signupName">Full name</label>
+          <input type="text" id="signupName" placeholder="Your name">
+          <div class="field-error" id="signupNameError"></div>
+        </div>
+        <div class="auth-field hidden" id="farmNameField">
+          <label for="signupFarmName">Farm / store name</label>
+          <input type="text" id="signupFarmName" placeholder="e.g. Patil Family Farm">
+        </div>
+        <div class="auth-field">
+          <label for="signupId">Email or mobile number</label>
+          <input type="text" id="signupId" placeholder="you@example.com">
+          <div class="field-error" id="signupIdError"></div>
+        </div>
+        <div class="auth-field">
+          <label for="signupPass">Password</label>
+          <input type="password" id="signupPass" placeholder="At least 8 characters">
+          <button type="button" class="toggle-pass" data-target="signupPass">Show</button>
+          <div class="field-error" id="signupPassError"></div>
+        </div>
+        <button type="submit" class="btn-solid full">Create account</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Add Produce Panel -->
+<div class="overlay" id="overlay">
+  <div class="panel">
+    <button class="close-x" id="closePanel">✕</button>
+    <p class="eyebrow">New arrival</p>
+    <h2>Add produce to the stall</h2>
+    <p class="sub">Fill in what you've got — it'll show up in the grid instantly.</p>
+
+    <form id="addForm">
+      <div class="form-grid">
+        <div class="full">
+          <label for="fName">Name</label>
+          <input type="text" id="fName" placeholder="e.g. Alphonso Mango" required>
+        </div>
+
+        <div>
+          <label for="fType">Type</label>
+          <select class="form-select" id="fType">
+            <option value="fruit">Fruit</option>
+            <option value="veg">Vegetable</option>
+          </select>
+        </div>
+        <div>
+          <label for="fIcon">Icon (emoji)</label>
+          <input type="text" id="fIcon" placeholder="🍋" maxlength="2" value="🍎">
+        </div>
+
+        <div>
+          <label for="fCalories">Calories (per 100g)</label>
+          <input type="number" id="fCalories" placeholder="52" min="0" required>
+        </div>
+        <div>
+          <label for="fNutrient">Standout nutrient</label>
+          <input type="text" id="fNutrient" placeholder="Vitamin C · 14mg" required>
+        </div>
+
+        <div class="price-trio">
+          <div>
+            <label for="p250">Price · 250g (₹)</label>
+            <input type="number" id="p250" min="0" step="0.5" required>
+          </div>
+          <div>
+            <label for="p500">Price · 500g (₹)</label>
+            <input type="number" id="p500" min="0" step="0.5" required>
+          </div>
+          <div>
+            <label for="p1kg">Price · 1kg (₹)</label>
+            <input type="number" id="p1kg" min="0" step="0.5" required>
+          </div>
+        </div>
+
+        <div class="checkbox-row">
+          <input type="checkbox" id="fOrganic">
+          <label for="fOrganic">Grown organically</label>
+        </div>
+      </div>
+
+      <div class="panel-actions">
+        <button type="button" class="btn-ghost" id="cancelAdd">Cancel</button>
+        <button type="submit" class="btn-solid">Add to stall</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Cart Drawer -->
+<div class="side-drawer" id="cartDrawer">
+  <div class="drawer-head">
+    <h2 style="font-size:1.15rem;">🧺 Your cart</h2>
+    <button class="close-x" id="closeCart" style="position:static;">✕</button>
+  </div>
+  <div class="drawer-body" id="cartBody"></div>
+  <div class="drawer-foot" id="cartFoot">
+    <div class="drawer-total-row"><span>Total</span><span id="cartTotal">₹0</span></div>
+    <button class="btn-solid full" id="checkoutBtn">Checkout</button>
+  </div>
+</div>
+
+<!-- Account Drawer: profile / addresses / orders / wishlist -->
+<div class="side-drawer" id="accountDrawer">
+  <div class="drawer-head">
+    <h2 style="font-size:1.15rem;">👤 My account</h2>
+    <button class="close-x" id="closeAccount" style="position:static;">✕</button>
+  </div>
+  <div class="drawer-body">
+    <div class="tabs-row" id="accountTabs">
+      <button class="active" data-tab="profile" data-i18n="nav.profile">Profile</button>
+      <button data-tab="addresses">Addresses</button>
+      <button data-tab="orders" data-i18n="nav.orders">My Orders</button>
+      <button data-tab="wishlist" data-i18n="nav.wishlist">Wishlist</button>
+    </div>
+
+    <div class="account-tab-panel" id="tabProfile">
+      <div class="form-stack">
+        <div>
+          <label class="form-label">Name</label>
+          <input class="form-input" type="text" id="profileName">
+        </div>
+        <div>
+          <label class="form-label">Language</label>
+          <select class="form-select" id="profileLang">
+            <option value="en">English</option>
+            <option value="hi">हिंदी</option>
+            <option value="mr">मराठी</option>
+          </select>
+        </div>
+        <button class="btn-solid" id="saveProfileBtn" style="width:fit-content;">Save profile</button>
+      </div>
+    </div>
+
+    <div class="account-tab-panel hidden" id="tabAddresses">
+      <div id="addressList"></div>
+      <form id="addAddressForm" class="form-stack" style="margin-top:16px;">
+        <input class="form-input" type="text" id="addrLabel" placeholder="Label (Home / Work)">
+        <input class="form-input" type="text" id="addrLine1" placeholder="Address line" required>
+        <input class="form-input" type="text" id="addrCity" placeholder="City" required>
+        <input class="form-input" type="text" id="addrState" placeholder="State" required>
+        <input class="form-input" type="text" id="addrPincode" placeholder="Pincode" required>
+        <button type="submit" class="btn-ghost" style="width:fit-content;">+ Add address</button>
+      </form>
+    </div>
+
+    <div class="account-tab-panel hidden" id="tabOrders">
+      <div id="orderList"></div>
+    </div>
+
+    <div class="account-tab-panel hidden" id="tabWishlist">
+      <div id="wishlistList"></div>
+    </div>
+
+    <button class="btn-ghost full" id="logoutBtn" style="margin-top:22px;" data-i18n="nav.logout">Logout</button>
+  </div>
+</div>
+
+<!-- Contact Seller Modal -->
+<div class="overlay" id="sellerOverlay">
+  <div class="auth-panel">
+    <button class="close-x" id="closeSeller">✕</button>
+    <p class="eyebrow">Contact seller</p>
+    <h2 id="sellerHeadline">Message the farmer</h2>
+    <form id="sellerForm" class="form-stack" style="margin-top:10px;">
+      <input class="form-input" type="text" id="sellerName" placeholder="Your name" required>
+      <input class="form-input" type="text" id="sellerContact" placeholder="Email or phone">
+      <textarea class="form-textarea" id="sellerMessage" placeholder="Ask about freshness, delivery, bulk pricing…" required></textarea>
+      <button type="submit" class="btn-solid full">Send message</button>
+    </form>
+  </div>
+</div>
+
+<!-- Checkout Modal -->
+<div class="overlay" id="checkoutOverlay">
+  <div class="auth-panel">
+    <button class="close-x" id="closeCheckout">✕</button>
+    <p class="eyebrow">Delivery address</p>
+    <h2>Where should we deliver?</h2>
+    <div id="checkoutAddressList" style="margin-top:14px;"></div>
+    <button class="btn-solid full" id="placeOrderBtn" style="margin-top:16px;">Place order</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>window.HARVEST_API_BASE = "http://localhost:5000/api";</script>
+<script src="js/api.js"></script>
+<script src="js/i18n.js"></script>
+<script>
+  // ---------- seed data (used instantly on load, then replaced by the backend catalog if reachable) ----------
+  let produce = [
+    { id: 1, name: "Alphonso Mango", type: "fruit", icon: "🥭", calories: 60, nutrient: "Vitamin C", nutrientPct: 36, origin: "Ratnagiri, MH", organic: true,
+      prices: { "250g": 90, "500g": 170, "1kg": 320 }, mrp: { "1kg": 380 } },
+    { id: 2, name: "Nagpur Orange", type: "fruit", icon: "🍊", calories: 47, nutrient: "Vitamin C", nutrientPct: 64, origin: "Nagpur, MH", organic: false,
+      prices: { "250g": 35, "500g": 65, "1kg": 120 } },
+    { id: 3, name: "Shimla Apple", type: "fruit", icon: "🍎", calories: 52, nutrient: "Fiber", nutrientPct: 17, origin: "Shimla, HP", organic: true,
+      prices: { "250g": 55, "500g": 105, "1kg": 200 }, mrp: { "1kg": 230 } },
+    { id: 4, name: "Cavendish Banana", type: "fruit", icon: "🍌", calories: 89, nutrient: "Potassium", nutrientPct: 12, origin: "Jalgaon, MH", organic: false,
+      prices: { "250g": 15, "500g": 28, "1kg": 50 } },
+    { id: 5, name: "Pomegranate", type: "fruit", icon: "🍎", calories: 83, nutrient: "Vitamin K", nutrientPct: 21, origin: "Solapur, MH", organic: true,
+      prices: { "250g": 60, "500g": 115, "1kg": 210 } },
+    { id: 6, name: "Baby Spinach", type: "veg", icon: "🥬", calories: 23, nutrient: "Vitamin A", nutrientPct: 188, origin: "Nashik, MH", organic: true,
+      prices: { "250g": 20, "500g": 35, "1kg": 60 } },
+    { id: 7, name: "Broccoli", type: "veg", icon: "🥦", calories: 34, nutrient: "Vitamin C", nutrientPct: 149, origin: "Nashik, MH", organic: true,
+      prices: { "250g": 45, "500g": 85, "1kg": 160 }, mrp: { "1kg": 190 } },
+    { id: 8, name: "Carrot", type: "veg", icon: "🥕", calories: 41, nutrient: "Vitamin A", nutrientPct: 334, origin: "Ooty, TN", organic: false,
+      prices: { "250g": 12, "500g": 22, "1kg": 40 } },
+    { id: 9, name: "Bell Pepper", type: "veg", icon: "🫑", calories: 31, nutrient: "Vitamin C", nutrientPct: 213, origin: "Nashik, MH", organic: false,
+      prices: { "250g": 30, "500g": 55, "1kg": 100 } },
+    { id: 10, name: "Beetroot", type: "veg", icon: "🍠", calories: 43, nutrient: "Folate", nutrientPct: 27, origin: "Pune, MH", organic: true,
+      prices: { "250g": 18, "500g": 32, "1kg": 58 } },
+    { id: 11, name: "Cherry Tomato", type: "veg", icon: "🍅", calories: 18, nutrient: "Lycopene", nutrientPct: 40, origin: "Nashik, MH", organic: true,
+      prices: { "250g": 25, "500g": 45, "1kg": 80 } },
+    { id: 12, name: "Green Grapes", type: "fruit", icon: "🍇", calories: 69, nutrient: "Vitamin K", nutrientPct: 18, origin: "Nashik, MH", organic: false,
+      prices: { "250g": 40, "500g": 75, "1kg": 140 } }
+  ];
+
+  // Maps a backend product document ({_id, prices, ...}) into the shape cardHTML()/pricing expect.
+  function normalizeProduct(doc){
+    return {
+      id: doc._id,
+      farmerId: doc.farmer?._id || doc.farmer,
+      name: doc.name,
+      type: doc.type,
+      icon: doc.icon || "🥗",
+      calories: doc.calories || 0,
+      nutrient: doc.nutrient || "",
+      nutrientPct: doc.nutrientPct || 0,
+      origin: doc.origin || "",
+      organic: !!doc.organic,
+      prices: doc.prices || {},
+      mrp: doc.mrp || null,
+      stock: doc.stock || null
+    };
+  }
+
+  // Tries the backend catalog first; on any failure (server not running, CORS, etc.)
+  // the page keeps working with the bundled demo produce above.
+  async function loadCatalogFromBackend(){
+    try {
+      const res = await Api.listProducts("?limit=50");
+      if (res.products && res.products.length){
+        produce = res.products.map(normalizeProduct);
+        render();
+        renderPricingSection();
+      }
+    } catch(err){
+      if (err.isNetworkError) console.info("Harvest Stall: backend not reachable, showing demo catalog.");
+    }
+  }
+
+  let nextId = produce.length + 1;
+  const selectedWeight = {};   // { productId: "500g" }
+  let activeFilter = "all";
+  let searchTerm = "";
+  let sortMode = "name";
+
+  // ---------- cart / wishlist state ----------
+  // Guest carts live only in this tab (localCart). Logged-in customers get their
+  // cart from the backend (Api.getCart) so it survives across devices/sessions.
+  let localCart = [];          // [{ productId, name, icon, weight, quantity, price }]
+  let backendCart = null;      // populated from Api.getCart() when logged in
+  let wishlistIds = new Set(); // string product ids, for the heart icon state
+  let myAddresses = [];
+
+  function isLoggedIn(){ return typeof Auth !== "undefined" && Auth.isLoggedIn(); }
+  function cartItems(){
+    if (isLoggedIn() && backendCart) {
+      return (backendCart.items || []).map(i => ({
+        itemId: i._id,
+        productId: i.product?._id || i.product,
+        name: i.product?.name || "Item",
+        icon: i.product?.icon || "🥗",
+        weight: i.weight,
+        quantity: i.quantity,
+        price: i.priceAtAdd
+      }));
+    }
+    return localCart;
+  }
+  function cartCountTotal(){ return cartItems().reduce((n, i) => n + i.quantity, 0); }
+  function updateCartBadge(){ document.getElementById("cartCount").textContent = cartCountTotal(); }
+
+  const grid = document.getElementById("grid");
+  const toast = document.getElementById("toast");
+
+  function showToast(msg){
+    toast.textContent = msg;
+    toast.classList.add("show");
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(()=> toast.classList.remove("show"), 1800);
+  }
+
+  function currentWeight(p){
+    return selectedWeight[p.id] || "500g";
+  }
+
+  function render(){
+    let list = produce.filter(p => {
+      const matchesFilter = activeFilter === "all" || p.type === activeFilter;
+      const matchesSearch = p.name.toLowerCase().includes(searchTerm.toLowerCase());
+      return matchesFilter && matchesSearch;
+    });
+
+    list.sort((a,b) => {
+      if (sortMode === "name") return a.name.localeCompare(b.name);
+      if (sortMode === "calories") return a.calories - b.calories;
+      const wa = currentWeight(a), wb = currentWeight(b);
+      if (sortMode === "price-asc") return a.prices[wa] - b.prices[wb];
+      if (sortMode === "price-desc") return b.prices[wb] - a.prices[wa];
+      return 0;
+    });
+
+    document.getElementById("statCount").textContent = produce.length;
+    document.getElementById("statFruit").textContent = produce.filter(p=>p.type==="fruit").length;
+    document.getElementById("statVeg").textContent = produce.filter(p=>p.type==="veg").length;
+
+    if (list.length === 0){
+      grid.innerHTML = `<div class="empty"><div class="em">🧺</div>Nothing matches that search.<br>Try a different name or filter.</div>`;
+      return;
+    }
+
+    grid.innerHTML = list.map(p => cardHTML(p)).join("");
+  }
+
+  function cardHTML(p){
+    const w = currentWeight(p);
+    const onSale = p.mrp && p.mrp[w];
+    return `
+    <div class="card ${onSale ? "sale":""}" data-id="${p.id}" style="position:relative;">
+      <button class="wish-btn ${wishlistIds.has(String(p.id)) ? 'active':''}" data-id="${p.id}" title="Wishlist">${wishlistIds.has(String(p.id)) ? '♥':'♡'}</button>
+      <div class="tag-string"></div>
+      <div class="tag">₹${p.prices[w]} / ${w}</div>
+      <div class="card-top">
+        <div class="icon-plate">${p.icon}</div>
+        ${p.organic ? '<span class="organic-pill">Organic</span>' : ''}
+      </div>
+      <div>
+        <h3>${p.name}</h3>
+        <div class="meta">${p.origin}</div>
+      </div>
+      <div class="nutri">
+        <div>
+          <b>${p.calories}</b><span>kcal /100g</span>
+        </div>
+        <div>
+          <b>${p.nutrient}</b><span>${p.nutrientPct}% DV</span>
+          <div class="bar"><i style="width:${Math.min(p.nutrientPct,100)}%"></i></div>
+        </div>
+      </div>
+      <div class="weights">
+        ${["250g","500g","1kg"].map(wt => `
+          <button class="w-chip ${wt===w?"active":""}" data-id="${p.id}" data-weight="${wt}">${wt}</button>
+        `).join("")}
+      </div>
+      <div class="buy-row">
+        <div class="price">₹${p.prices[w]}
+          ${onSale ? `<span class="strike">₹${p.mrp[w]}</span>` : ""}
+          <br><small>per ${w}</small>
+        </div>
+        <div class="card-actions-row">
+          <button class="contact-seller-btn" data-id="${p.id}" title="Contact seller">✉️</button>
+          <button class="buy-btn" data-id="${p.id}">Add</button>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  grid.addEventListener("click", async (e) => {
+    const wChip = e.target.closest(".w-chip");
+    if (wChip){
+      selectedWeight[wChip.dataset.id] = wChip.dataset.weight;
+      render();
+      return;
+    }
+
+    const wishBtn = e.target.closest(".wish-btn");
+    if (wishBtn){
+      if (!isLoggedIn()){ showToast("Login to save items to your wishlist"); openAuth(); return; }
+      const id = wishBtn.dataset.id;
+      try {
+        const res = await Api.toggleWishlist(id);
+        if (res.action === "added") wishlistIds.add(String(id)); else wishlistIds.delete(String(id));
+        showToast(res.action === "added" ? "Added to wishlist" : "Removed from wishlist");
+        render();
+      } catch(err){ showToast(err.message); }
+      return;
+    }
+
+    const sellerBtn = e.target.closest(".contact-seller-btn");
+    if (sellerBtn){
+      openSellerModal(sellerBtn.dataset.id);
+      return;
+    }
+
+    const buyBtn = e.target.closest(".buy-btn");
+    if (buyBtn){
+      const p = produce.find(x => x.id == buyBtn.dataset.id);
+      const w = currentWeight(p);
+      await addToCart(p, w, 1);
+    }
+  });
+
+  async function addToCart(p, w, qty){
+    if (isLoggedIn()){
+      try {
+        const res = await Api.addToCart({ productId: p.id, weight: w, quantity: qty });
+        backendCart = res.cart;
+        updateCartBadge();
+        showToast(`Added ${p.name} (${w}) to cart · ₹${p.prices[w]}`);
+      } catch(err){ showToast(err.message); }
+      return;
+    }
+    const existing = localCart.find(i => i.productId === p.id && i.weight === w);
+    if (existing) existing.quantity += qty;
+    else localCart.push({ productId: p.id, name: p.name, icon: p.icon, weight: w, quantity: qty, price: p.prices[w] });
+    updateCartBadge();
+    showToast(`Added ${p.name} (${w}) to cart · ₹${p.prices[w]}`);
+  }
+
+  // ---------- filters / search / sort ----------
+  document.getElementById("filterChips").addEventListener("click", (e) => {
+    const chip = e.target.closest(".chip");
+    if (!chip) return;
+    document.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
+    chip.classList.add("active");
+    activeFilter = chip.dataset.filter;
+    render();
+  });
+
+  document.getElementById("searchInput").addEventListener("input", (e) => {
+    searchTerm = e.target.value;
+    render();
+  });
+
+  document.getElementById("sortSelect").addEventListener("change", (e) => {
+    sortMode = e.target.value;
+    render();
+  });
+
+  // ---------- cart drawer ----------
+  const cartDrawer = document.getElementById("cartDrawer");
+  function money(n){ return `₹${Number(n).toFixed(0)}`; }
+
+  function renderCartDrawer(){
+    const items = cartItems();
+    const body = document.getElementById("cartBody");
+    if (items.length === 0){
+      body.innerHTML = `<div class="empty" style="padding:30px 0;"><div class="em">🧺</div>Your cart is empty.</div>`;
+    } else {
+      body.innerHTML = items.map(i => `
+        <div class="drawer-item" data-item="${i.itemId || i.productId}" data-weight="${i.weight}">
+          <div class="di-icon">${i.icon}</div>
+          <div class="di-info">
+            <b>${i.name}</b><br><small>${i.weight} · ${money(i.price)}</small>
+          </div>
+          <div class="qty-stepper">
+            <button class="qty-dec">−</button>
+            <span>${i.quantity}</span>
+            <button class="qty-inc">+</button>
+          </div>
+          <button class="mini-btn remove-item">✕</button>
+        </div>`).join("");
+    }
+    const total = items.reduce((s, i) => s + i.price * i.quantity, 0);
+    document.getElementById("cartTotal").textContent = money(total);
+    updateCartBadge();
+  }
+
+  document.getElementById("cartBtn").addEventListener("click", () => {
+    renderCartDrawer();
+    cartDrawer.classList.add("open");
+  });
+  document.getElementById("closeCart").addEventListener("click", () => cartDrawer.classList.remove("open"));
+
+  document.getElementById("cartBody").addEventListener("click", async (e) => {
+    const row = e.target.closest(".drawer-item");
+    if (!row) return;
+    const items = cartItems();
+    const item = items.find(i => String(i.itemId || i.productId) === row.dataset.item && i.weight === row.dataset.weight);
+    if (!item) return;
+
+    if (e.target.classList.contains("qty-inc") || e.target.classList.contains("qty-dec")){
+      const delta = e.target.classList.contains("qty-inc") ? 1 : -1;
+      const newQty = item.quantity + delta;
+      if (isLoggedIn() && backendCart){
+        try {
+          if (newQty < 1) { const res = await Api.removeCartItem(item.itemId); backendCart = res.cart; }
+          else { const res = await Api.updateCartItem(item.itemId, { quantity: newQty }); backendCart = res.cart; }
+        } catch(err){ showToast(err.message); }
+      } else {
+        if (newQty < 1) localCart = localCart.filter(i => i !== item);
+        else item.quantity = newQty;
+      }
+      renderCartDrawer();
+    }
+
+    if (e.target.classList.contains("remove-item")){
+      if (isLoggedIn() && backendCart){
+        try { const res = await Api.removeCartItem(item.itemId); backendCart = res.cart; } catch(err){ showToast(err.message); }
+      } else {
+        localCart = localCart.filter(i => i !== item);
+      }
+      renderCartDrawer();
+    }
+  });
+
+  document.getElementById("checkoutBtn").addEventListener("click", async () => {
+    if (cartItems().length === 0){ showToast("Your cart is empty"); return; }
+    if (!isLoggedIn()){ showToast("Login to checkout"); cartDrawer.classList.remove("open"); openAuth(); return; }
+    renderCheckoutAddresses();
+    document.getElementById("checkoutOverlay").classList.add("open");
+  });
+
+  function renderCheckoutAddresses(){
+    const wrap = document.getElementById("checkoutAddressList");
+    if (myAddresses.length === 0){
+      wrap.innerHTML = `<p class="p-origin">No saved address yet — add one in My Account → Addresses first.</p>`;
+      return;
+    }
+    wrap.innerHTML = myAddresses.map(a => `
+      <label class="addr-card" style="display:block; cursor:pointer;">
+        <input type="radio" name="checkoutAddr" value="${a._id}" ${a.isDefault ? "checked":""}>
+        <b>${a.label || "Address"}</b><br>${a.line1}, ${a.city}, ${a.state} - ${a.pincode}
+      </label>`).join("");
+  }
+
+  document.getElementById("closeCheckout").addEventListener("click", () => document.getElementById("checkoutOverlay").classList.remove("open"));
+
+  document.getElementById("placeOrderBtn").addEventListener("click", async () => {
+    const selected = document.querySelector('input[name="checkoutAddr"]:checked');
+    if (!selected){ showToast("Select a delivery address"); return; }
+    try {
+      await Api.checkout({ addressId: selected.value, paymentMethod: "cod" });
+      backendCart = { items: [] };
+      showToast("Order placed! Track it under My Orders.");
+      document.getElementById("checkoutOverlay").classList.remove("open");
+      cartDrawer.classList.remove("open");
+      updateCartBadge();
+    } catch(err){ showToast(err.message); }
+  });
+
+  // ---------- contact seller modal ----------
+  const sellerOverlay = document.getElementById("sellerOverlay");
+  let sellerTargetId = null;
+  function openSellerModal(productId){
+    sellerTargetId = productId;
+    const p = produce.find(x => x.id == productId);
+    document.getElementById("sellerHeadline").textContent = p ? `Ask about ${p.name}` : "Message the farmer";
+    if (currentUser){
+      document.getElementById("sellerName").value = currentUser.name;
+    }
+    sellerOverlay.classList.add("open");
+  }
+  document.getElementById("closeSeller").addEventListener("click", () => sellerOverlay.classList.remove("open"));
+  sellerOverlay.addEventListener("click", (e) => { if (e.target === sellerOverlay) sellerOverlay.classList.remove("open"); });
+
+  document.getElementById("sellerForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const p = produce.find(x => x.id == sellerTargetId);
+    const farmerId = p && p.farmerId;
+    const payload = {
+      name: document.getElementById("sellerName").value.trim(),
+      email: currentUser?.email,
+      phone: currentUser?.phone,
+      message: document.getElementById("sellerMessage").value.trim()
+    };
+    try {
+      if (farmerId) await Api.contactSeller(farmerId, payload);
+      else await Api.sendContact({ ...payload, subject: p ? `Question about ${p.name}` : "Product question" });
+      showToast("Message sent to the seller");
+      e.target.reset();
+      sellerOverlay.classList.remove("open");
+    } catch(err){ showToast(err.message); }
+  });
+
+  // ---------- pricing section ----------
+  function renderPricingSection(){
+    const wrap = document.getElementById("pricingGrid");
+    if (!wrap) return;
+    wrap.innerHTML = produce.slice(0, 9).map(p => {
+      const stockBadge = p.stock
+        ? (Object.values(p.stock).every(v => v > 10) ? '<span class="badge badge-instock">In stock</span>'
+          : Object.values(p.stock).some(v => v > 0) ? '<span class="badge badge-lowstock">Low stock</span>'
+          : '<span class="badge badge-outofstock">Out of stock</span>')
+        : '<span class="badge badge-instock">In stock</span>';
+      return `
+      <div class="pricing-card">
+        <div class="p-icon">${p.icon}</div>
+        <h3>${p.name}</h3>
+        <div class="p-origin">${p.origin || ""}</div>
+        <div class="pricing-rows">
+          ${["250g","500g","1kg"].map(w => `
+            <div class="pricing-row">
+              <span>${w}</span>
+              <span>${p.mrp && p.mrp[w] ? `<span class="p-strike">₹${p.mrp[w]}</span>`:""}<b>₹${p.prices[w] ?? "—"}</b></span>
+            </div>`).join("")}
+        </div>
+        <div class="pricing-badges">
+          ${p.organic ? '<span class="badge badge-organic">Organic</span>' : ''}
+          ${p.mrp ? '<span class="badge badge-sale">Seasonal offer</span>' : ''}
+          ${stockBadge}
+        </div>
+      </div>`;
+    }).join("");
+  }
+
+  // ---------- add produce panel ----------
+  const overlay = document.getElementById("overlay");
+  document.getElementById("openAdd").addEventListener("click", () => overlay.classList.add("open"));
+  document.getElementById("closePanel").addEventListener("click", () => overlay.classList.remove("open"));
+  document.getElementById("cancelAdd").addEventListener("click", () => overlay.classList.remove("open"));
+  overlay.addEventListener("click", (e) => { if (e.target === overlay) overlay.classList.remove("open"); });
+
+  document.getElementById("addForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const draft = {
+      name: document.getElementById("fName").value.trim(),
+      type: document.getElementById("fType").value,
+      icon: document.getElementById("fIcon").value.trim() || "🥗",
+      calories: Number(document.getElementById("fCalories").value),
+      nutrient: document.getElementById("fNutrient").value.trim(),
+      organic: document.getElementById("fOrganic").checked,
+      prices: {
+        "250g": Number(document.getElementById("p250").value),
+        "500g": Number(document.getElementById("p500").value),
+        "1kg": Number(document.getElementById("p1kg").value)
+      }
+    };
+
+    if (isLoggedIn() && currentUser && currentUser.role === "farmer"){
+      try {
+        const fd = new FormData();
+        Object.entries(draft).forEach(([k, v]) => {
+          fd.append(k, typeof v === "object" ? JSON.stringify(v) : v);
+        });
+        const res = await Api.createProduct(fd);
+        produce.unshift(normalizeProduct(res.product));
+      } catch(err){ showToast(err.message); return; }
+    } else {
+      produce.unshift({ id: nextId++, ...draft, nutrientPct: Math.floor(Math.random()*60)+15, origin: "Added by you" });
+    }
+
+    e.target.reset();
+    document.getElementById("fIcon").value = "🍎";
+    overlay.classList.remove("open");
+    showToast(`${draft.name} added to the stall`);
+    render();
+    renderPricingSection();
+  });
+
+  // ---------- auth (wired to the backend; falls back gracefully if it's unreachable) ----------
+  let currentUser = null; // { name, role, email, phone, ... } — mirrors Auth.getUser()
+
+  const authOverlay = document.getElementById("authOverlay");
+  const openAuthBtn = document.getElementById("openAuth");
+  const userChip = document.getElementById("userChip");
+  const dashboardLink = document.getElementById("dashboardLink");
+  const openAddBtn = document.getElementById("openAdd");
+
+  function openAuth(){ authOverlay.classList.add("open"); }
+  function closeAuth(){ authOverlay.classList.remove("open"); }
+
+  openAuthBtn.addEventListener("click", openAuth);
+  document.getElementById("closeAuth").addEventListener("click", closeAuth);
+  authOverlay.addEventListener("click", (e) => { if (e.target === authOverlay) closeAuth(); });
+
+  // tab switching
+  const tabLogin = document.getElementById("tabLogin");
+  const tabSignup = document.getElementById("tabSignup");
+  const loginView = document.getElementById("loginView");
+  const signupView = document.getElementById("signupView");
+  const authHeadline = document.getElementById("authHeadline");
+
+  function showLoginTab(){
+    tabLogin.classList.add("active"); tabSignup.classList.remove("active");
+    loginView.classList.remove("hidden"); signupView.classList.add("hidden");
+    authHeadline.textContent = "Welcome back";
+  }
+  function showSignupTab(){
+    tabSignup.classList.add("active"); tabLogin.classList.remove("active");
+    signupView.classList.remove("hidden"); loginView.classList.add("hidden");
+    authHeadline.textContent = "Join the stall";
+  }
+  tabLogin.addEventListener("click", showLoginTab);
+  tabSignup.addEventListener("click", showSignupTab);
+
+  // signup role toggle (customer / farmer)
+  let signupRole = "customer";
+  const roleCustomerBtn = document.getElementById("roleCustomerBtn");
+  const roleFarmerBtn = document.getElementById("roleFarmerBtn");
+  const farmNameField = document.getElementById("farmNameField");
+  function setSignupRole(role){
+    signupRole = role;
+    roleCustomerBtn.classList.toggle("active", role === "customer");
+    roleFarmerBtn.classList.toggle("active", role === "farmer");
+    farmNameField.classList.toggle("hidden", role !== "farmer");
+  }
+  roleCustomerBtn.addEventListener("click", () => setSignupRole("customer"));
+  roleFarmerBtn.addEventListener("click", () => setSignupRole("farmer"));
+
+  // show/hide password
+  document.querySelectorAll(".toggle-pass").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const input = document.getElementById(btn.dataset.target);
+      const isPass = input.type === "password";
+      input.type = isPass ? "text" : "password";
+      btn.textContent = isPass ? "Hide" : "Show";
+    });
+  });
+
+  function isValidIdentifier(val){
+    const email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const mobile = /^\+?[0-9]{7,15}$/;
+    return email.test(val.trim()) || mobile.test(val.trim());
+  }
+  function setAuthError(id, msg){ document.getElementById(id).textContent = msg || ""; }
+
+  async function afterLogin(user){
+    currentUser = user;
+    document.getElementById("userAvatar").textContent = (user.avatarInitial || user.name || "?").charAt(0).toUpperCase();
+    document.getElementById("userName").textContent = (user.name || "Account").split(" ")[0];
+    userChip.classList.remove("hidden");
+    openAuthBtn.classList.add("hidden");
+    closeAuth();
+
+    if (user.role === "farmer"){
+      dashboardLink.href = "farmer-dashboard.html";
+      dashboardLink.classList.remove("hidden");
+      openAddBtn.classList.remove("hidden");
+    } else if (user.role === "admin"){
+      dashboardLink.href = "admin-dashboard.html";
+      dashboardLink.classList.remove("hidden");
+    } else {
+      dashboardLink.classList.add("hidden");
+      openAddBtn.classList.add("hidden");
+    }
+
+    myAddresses = user.addresses || [];
+    if (user.role === "customer"){
+      try { const res = await Api.getCart(); backendCart = res.cart; } catch(e){}
+      try { const res = await Api.getWishlist(); wishlistIds = new Set((res.wishlist||[]).map(p => String(p._id))); } catch(e){}
+    }
+    updateCartBadge();
+    render();
+    renderPricingSection();
+  }
+
+  document.getElementById("loginForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    let ok = true;
+    const idVal = document.getElementById("loginId").value;
+    const passVal = document.getElementById("loginPass").value;
+
+    if (!idVal.trim()){ setAuthError("loginIdError", "Enter your email or mobile number."); ok = false; }
+    else if (!isValidIdentifier(idVal)){ setAuthError("loginIdError", "That doesn't look like a valid email or mobile number."); ok = false; }
+    else setAuthError("loginIdError", "");
+
+    if (!passVal){ setAuthError("loginPassError", "Enter your password."); ok = false; }
+    else setAuthError("loginPassError", "");
+    if (!ok) return;
+
+    try {
+      const res = await Api.login({ identifier: idVal.trim(), password: passVal });
+      Auth.setSession(res.token, res.user);
+      await afterLogin(res.user);
+      showToast(`Welcome back, ${res.user.name.split(" ")[0]}`);
+      e.target.reset();
+    } catch(err){
+      setAuthError("loginPassError", err.message);
+    }
+  });
+
+  document.getElementById("signupForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    let ok = true;
+    const nameVal = document.getElementById("signupName").value;
+    const idVal = document.getElementById("signupId").value;
+    const passVal = document.getElementById("signupPass").value;
+
+    if (!nameVal.trim()){ setAuthError("signupNameError", "Enter your name."); ok = false; }
+    else setAuthError("signupNameError", "");
+
+    if (!idVal.trim()){ setAuthError("signupIdError", "Enter your email or mobile number."); ok = false; }
+    else if (!isValidIdentifier(idVal)){ setAuthError("signupIdError", "That doesn't look like a valid email or mobile number."); ok = false; }
+    else setAuthError("signupIdError", "");
+
+    if (!passVal || passVal.length < 8){ setAuthError("signupPassError", "Password needs at least 8 characters."); ok = false; }
+    else setAuthError("signupPassError", "");
+    if (!ok) return;
+
+    const payload = {
+      name: nameVal.trim(),
+      password: passVal,
+      role: signupRole,
+      ...(idVal.includes("@") ? { email: idVal.trim() } : { phone: idVal.trim() }),
+      ...(signupRole === "farmer" ? { farmName: document.getElementById("signupFarmName").value.trim() } : {})
+    };
+
+    try {
+      const res = await Api.register(payload);
+      Auth.setSession(res.token, res.user);
+      await afterLogin(res.user);
+      showToast(res.message || `Account created — welcome, ${res.user.name.split(" ")[0]}`);
+      e.target.reset();
+      setSignupRole("customer");
+    } catch(err){
+      setAuthError("signupIdError", err.message);
+    }
+  });
+
+  document.getElementById("forgotLink").addEventListener("click", (e) => {
+    e.preventDefault();
+    showToast("If that account exists, a reset link is on its way.");
+  });
+
+  document.getElementById("googleBtn").addEventListener("click", () => {
+    showToast("Google sign-in isn't wired up in this build yet.");
+  });
+
+  // ---------- account drawer (profile / addresses / orders / wishlist) ----------
+  const accountDrawer = document.getElementById("accountDrawer");
+  userChip.addEventListener("click", () => {
+    document.getElementById("profileName").value = currentUser?.name || "";
+    document.getElementById("profileLang").value = I18n.current;
+    renderAddressList();
+    renderOrderList();
+    renderWishlistList();
+    accountDrawer.classList.add("open");
+  });
+  document.getElementById("closeAccount").addEventListener("click", () => accountDrawer.classList.remove("open"));
+
+  document.getElementById("accountTabs").addEventListener("click", (e) => {
+    const btn = e.target.closest("button[data-tab]");
+    if (!btn) return;
+    document.querySelectorAll("#accountTabs button").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    document.querySelectorAll(".account-tab-panel").forEach(p => p.classList.add("hidden"));
+    document.getElementById(`tab${btn.dataset.tab.charAt(0).toUpperCase()}${btn.dataset.tab.slice(1)}`).classList.remove("hidden");
+  });
+
+  document.getElementById("saveProfileBtn").addEventListener("click", async () => {
+    try {
+      const res = await Api.updateProfile({ name: document.getElementById("profileName").value.trim(), language: document.getElementById("profileLang").value });
+      Auth.setSession(Auth.getToken(), res.user);
+      currentUser = res.user;
+      I18n.setLang(res.user.language);
+      document.getElementById("userName").textContent = res.user.name.split(" ")[0];
+      showToast("Profile updated");
+    } catch(err){ showToast(err.message); }
+  });
+
+  function renderAddressList(){
+    const wrap = document.getElementById("addressList");
+    if (!myAddresses.length){ wrap.innerHTML = `<p class="p-origin">No addresses yet.</p>`; return; }
+    wrap.innerHTML = myAddresses.map(a => `
+      <div class="addr-card">
+        <b>${a.label || "Address"}</b> ${a.isDefault ? "· default" : ""}<br>
+        ${a.line1}${a.line2 ? ", "+a.line2 : ""}, ${a.city}, ${a.state} - ${a.pincode}
+        <div style="margin-top:8px;"><button class="mini-btn" data-del="${a._id}">Remove</button></div>
+      </div>`).join("");
+    wrap.querySelectorAll("[data-del]").forEach(btn => btn.addEventListener("click", async () => {
+      try { const res = await Api.deleteAddress(btn.dataset.del); myAddresses = res.addresses; renderAddressList(); showToast("Address removed"); }
+      catch(err){ showToast(err.message); }
+    }));
+  }
+
+  document.getElementById("addAddressForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    try {
+      const res = await Api.addAddress({
+        label: document.getElementById("addrLabel").value.trim(),
+        line1: document.getElementById("addrLine1").value.trim(),
+        city: document.getElementById("addrCity").value.trim(),
+        state: document.getElementById("addrState").value.trim(),
+        pincode: document.getElementById("addrPincode").value.trim(),
+        isDefault: myAddresses.length === 0
+      });
+      myAddresses = res.addresses;
+      renderAddressList();
+      e.target.reset();
+      showToast("Address added");
+    } catch(err){ showToast(err.message); }
+  });
+
+  async function renderOrderList(){
+    const wrap = document.getElementById("orderList");
+    wrap.innerHTML = `<p class="p-origin">Loading…</p>`;
+    try {
+      const res = await Api.myOrders();
+      if (!res.orders.length){ wrap.innerHTML = `<p class="p-origin">No orders yet.</p>`; return; }
+      wrap.innerHTML = res.orders.map(o => `
+        <div class="order-card">
+          <div style="display:flex; justify-content:space-between;">
+            <b>${o.farmer?.farmerProfile?.farmName || o.farmer?.name || "Farmer"}</b>
+            <span class="order-status status-${o.status}">${o.status.replace(/_/g," ")}</span>
+          </div>
+          <div style="margin-top:6px; font-size:0.82rem;">
+            ${o.items.map(i => `${i.icon || ""} ${i.name} · ${i.weight} × ${i.quantity}`).join("<br>")}
+          </div>
+          <div style="margin-top:8px; font-weight:700;">₹${o.itemsTotal}</div>
+        </div>`).join("");
+    } catch(err){ wrap.innerHTML = `<p class="p-origin">${err.message}</p>`; }
+  }
+
+  async function renderWishlistList(){
+    const wrap = document.getElementById("wishlistList");
+    wrap.innerHTML = `<p class="p-origin">Loading…</p>`;
+    try {
+      const res = await Api.getWishlist();
+      wishlistIds = new Set((res.wishlist||[]).map(p => String(p._id)));
+      if (!res.wishlist.length){ wrap.innerHTML = `<p class="p-origin">Nothing saved yet — tap the heart on any item.</p>`; return; }
+      wrap.innerHTML = res.wishlist.map(p => `
+        <div class="drawer-item">
+          <div class="di-icon">${p.icon}</div>
+          <div class="di-info"><b>${p.name}</b><br><small>from ₹${p.prices?.["250g"] ?? "—"}</small></div>
+          <button class="mini-btn" data-unwish="${p._id}">Remove</button>
+        </div>`).join("");
+      wrap.querySelectorAll("[data-unwish]").forEach(btn => btn.addEventListener("click", async () => {
+        await Api.toggleWishlist(btn.dataset.unwish);
+        renderWishlistList();
+        render();
+      }));
+    } catch(err){ wrap.innerHTML = `<p class="p-origin">${err.message}</p>`; }
+  }
+
+  document.getElementById("wishlistBtn").addEventListener("click", () => {
+    if (!isLoggedIn()){ showToast("Login to view your wishlist"); openAuth(); return; }
+    document.querySelectorAll("#accountTabs button").forEach(b => b.classList.remove("active"));
+    document.querySelector('#accountTabs [data-tab="wishlist"]').classList.add("active");
+    document.querySelectorAll(".account-tab-panel").forEach(p => p.classList.add("hidden"));
+    document.getElementById("tabWishlist").classList.remove("hidden");
+    renderWishlistList();
+    accountDrawer.classList.add("open");
+  });
+
+  document.getElementById("logoutBtn").addEventListener("click", () => {
+    Auth.clear();
+    currentUser = null;
+    backendCart = null;
+    wishlistIds = new Set();
+    myAddresses = [];
+    userChip.classList.add("hidden");
+    openAuthBtn.classList.remove("hidden");
+    dashboardLink.classList.add("hidden");
+    openAddBtn.classList.add("hidden");
+    accountDrawer.classList.remove("open");
+    showLoginTab();
+    updateCartBadge();
+    render();
+    showToast("Logged out");
+  });
+
+  // ---------- language selector + dark mode ----------
+  function syncLangSelectors(){
+    document.querySelectorAll(".lang-select").forEach(sel => sel.value = I18n.current);
+  }
+  document.getElementById("langSelect").addEventListener("change", (e) => { I18n.setLang(e.target.value); syncLangSelectors(); });
+  document.getElementById("langSelectFooter").addEventListener("change", (e) => { I18n.setLang(e.target.value); syncLangSelectors(); });
+  syncLangSelectors();
+
+  const themeToggle = document.getElementById("themeToggle");
+  function applyTheme(theme){
+    document.documentElement.setAttribute("data-theme", theme);
+    themeToggle.textContent = theme === "dark" ? "☀️" : "🌙";
+    localStorage.setItem("hs_theme", theme);
+  }
+  applyTheme(localStorage.getItem("hs_theme") || "light");
+  themeToggle.addEventListener("click", () => {
+    applyTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark");
+  });
+
+  // ---------- hero CTAs ----------
+  document.getElementById("heroShopBtn").addEventListener("click", () => {
+    document.getElementById("grid").scrollIntoView({ behavior: "smooth" });
+  });
+  document.getElementById("heroFarmerBtn").addEventListener("click", () => {
+    openAuth(); showSignupTab(); setSignupRole("farmer");
+  });
+
+  // ---------- contact form ----------
+  document.getElementById("contactForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    try {
+      await Api.sendContact({
+        name: document.getElementById("cfName").value.trim(),
+        email: document.getElementById("cfEmail").value.trim(),
+        phone: document.getElementById("cfPhone").value.trim(),
+        subject: document.getElementById("cfSubject").value.trim(),
+        message: document.getElementById("cfMessage").value.trim()
+      });
+      showToast("Message sent — we'll get back to you soon");
+      e.target.reset();
+    } catch(err){ showToast(err.message); }
+  });
+
+  // ---------- restore session + load catalog on page load ----------
+  (async function init(){
+    render();
+    renderPricingSection();
+    if (isLoggedIn()){
+      try { const res = await Api.me(); Auth.setSession(Auth.getToken(), res.user); await afterLogin(res.user); }
+      catch(e){ Auth.clear(); }
+    }
+    await loadCatalogFromBackend();
+  })();
+</script>
+</body>
+</html>

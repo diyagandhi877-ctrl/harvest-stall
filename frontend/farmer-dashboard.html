@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Farmer Dashboard — Harvest Stall</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/extend.css">
+</head>
+<body>
+
+<div id="guard" class="login-guard hidden">
+  <div class="mark" style="font-size:2.4rem;">🌿</div>
+  <h2>Farmer sign-in required</h2>
+  <p>Log in with a farmer account on the main site, then come back here.</p>
+  <a class="btn-solid" href="index.html">Go to Harvest Stall</a>
+</div>
+
+<div class="dash-shell hidden" id="dashShell">
+  <aside class="dash-sidebar">
+    <div class="brand"><span class="mark">🌿</span>Harvest Stall</div>
+    <button class="dash-nav-link active" data-view="overview">📊 Overview</button>
+    <button class="dash-nav-link" data-view="products">🥕 My Products</button>
+    <button class="dash-nav-link" data-view="orders">📦 Orders</button>
+    <button class="dash-nav-link" data-view="analytics">📈 Analytics</button>
+    <button class="dash-nav-link" data-view="messages">💬 Messages</button>
+    <button class="dash-nav-link" data-view="profile">⚙️ Profile</button>
+    <a class="dash-nav-link" href="index.html">🧺 Back to storefront</a>
+    <button class="dash-nav-link" id="farmerLogoutBtn" style="margin-top:auto; color:var(--tomato);">🚪 Logout</button>
+  </aside>
+
+  <main class="dash-main">
+    <div class="dash-topbar">
+      <h1 id="viewTitle">Overview</h1>
+      <span id="farmerName" class="user-chip" style="cursor:default;"></span>
+    </div>
+
+    <!-- Overview -->
+    <section id="view-overview" class="dash-view">
+      <div id="approvalNotice"></div>
+      <div class="stat-grid" id="overviewStats"></div>
+      <div class="panel-card">
+        <h2>Availability</h2>
+        <div class="tabs-row" id="availabilityTabs" style="width:fit-content;">
+          <button data-val="open">🟢 Open</button>
+          <button data-val="on_break">🟡 On a break</button>
+          <button data-val="closed">🔴 Closed</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Products -->
+    <section id="view-products" class="dash-view hidden">
+      <div class="panel-card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+          <h2 style="margin:0;">Add a product</h2>
+        </div>
+        <form id="productForm" class="form-stack" style="max-width:640px;">
+          <div class="pill-toggle">
+            <input class="form-input" style="flex:2;" type="text" id="pfName" placeholder="Product name" required>
+            <select class="form-select" id="pfType" style="flex:1;">
+              <option value="fruit">Fruit</option>
+              <option value="veg">Vegetable</option>
+            </select>
+          </div>
+          <div class="pill-toggle">
+            <input class="form-input" type="text" id="pfIcon" placeholder="Icon emoji e.g. 🍎" maxlength="2" style="flex:1;">
+            <input class="form-input" type="text" id="pfOrigin" placeholder="Origin e.g. Nashik, MH" style="flex:2;">
+          </div>
+          <div class="pill-toggle">
+            <input class="form-input" type="number" id="pfCalories" placeholder="Calories /100g" style="flex:1;">
+            <input class="form-input" type="text" id="pfNutrient" placeholder="Standout nutrient" style="flex:1;">
+          </div>
+          <div class="price-trio" style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px;">
+            <input class="form-input" type="number" id="pfPrice250" placeholder="Price 250g" required>
+            <input class="form-input" type="number" id="pfPrice500" placeholder="Price 500g" required>
+            <input class="form-input" type="number" id="pfPrice1kg" placeholder="Price 1kg" required>
+          </div>
+          <div class="price-trio" style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px;">
+            <input class="form-input" type="number" id="pfStock250" placeholder="Stock 250g" required>
+            <input class="form-input" type="number" id="pfStock500" placeholder="Stock 500g" required>
+            <input class="form-input" type="number" id="pfStock1kg" placeholder="Stock 1kg" required>
+          </div>
+          <label class="checkbox-row"><input type="checkbox" id="pfOrganic"> Grown organically</label>
+          <button type="submit" class="btn-solid" style="width:fit-content;">+ Add product</button>
+        </form>
+      </div>
+
+      <div class="panel-card">
+        <h2>My products</h2>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Product</th><th>250g</th><th>500g</th><th>1kg</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="myProductsBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Orders -->
+    <section id="view-orders" class="dash-view hidden">
+      <div class="panel-card">
+        <div class="tabs-row" id="orderStatusTabs">
+          <button class="active" data-status="">All</button>
+          <button data-status="pending">Pending</button>
+          <button data-status="accepted">Accepted</button>
+          <button data-status="delivered">Delivered</button>
+          <button data-status="rejected">Rejected</button>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Customer</th><th>Items</th><th>Total</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="ordersBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Analytics -->
+    <section id="view-analytics" class="dash-view hidden">
+      <div class="panel-card">
+        <h2>Revenue — last 30 days</h2>
+        <div class="simple-bar-chart" id="revenueChart"></div>
+      </div>
+      <div class="panel-card">
+        <h2>Top-selling products</h2>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Product</th><th>Units sold</th><th>Revenue</th></tr></thead>
+            <tbody id="topProductsBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Messages -->
+    <section id="view-messages" class="dash-view hidden">
+      <div class="panel-card">
+        <h2>Customer messages</h2>
+        <div id="messagesList"></div>
+      </div>
+    </section>
+
+    <!-- Profile -->
+    <section id="view-profile" class="dash-view hidden">
+      <div class="panel-card">
+        <h2>Store profile</h2>
+        <form id="profileForm" class="form-stack" style="max-width:480px;">
+          <div><label class="form-label">Farm / store name</label><input class="form-input" type="text" id="prFarmName"></div>
+          <div><label class="form-label">Store address</label><input class="form-input" type="text" id="prAddress"></div>
+          <div><label class="form-label">WhatsApp number</label><input class="form-input" type="text" id="prWhatsapp"></div>
+          <div><label class="form-label">Description</label><textarea class="form-textarea" id="prDescription"></textarea></div>
+          <button type="submit" class="btn-solid" style="width:fit-content;">Save profile</button>
+        </form>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>window.HARVEST_API_BASE = "http://localhost:5000/api";</script>
+<script src="js/api.js"></script>
+<script src="js/i18n.js"></script>
+<script>
+  const toast = document.getElementById("toast");
+  function showToast(msg){
+    toast.textContent = msg; toast.classList.add("show");
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(()=> toast.classList.remove("show"), 2200);
+  }
+
+  let me = null;
+
+  function switchView(view){
+    document.querySelectorAll(".dash-nav-link[data-view]").forEach(b => b.classList.toggle("active", b.dataset.view === view));
+    document.querySelectorAll(".dash-view").forEach(s => s.classList.add("hidden"));
+    document.getElementById(`view-${view}`).classList.remove("hidden");
+    document.getElementById("viewTitle").textContent = document.querySelector(`.dash-nav-link[data-view="${view}"]`).textContent.trim();
+    if (view === "products") loadMyProducts();
+    if (view === "orders") loadOrders();
+    if (view === "analytics") loadAnalytics();
+    if (view === "messages") loadMessages();
+  }
+  document.querySelectorAll(".dash-nav-link[data-view]").forEach(btn => {
+    btn.addEventListener("click", () => switchView(btn.dataset.view));
+  });
+
+  async function loadOverview(){
+    try {
+      const res = await Api.farmerDashboard();
+      const o = res.overview;
+      document.getElementById("overviewStats").innerHTML = `
+        <div class="stat-card"><div class="st-label">Total products</div><div class="st-value">${o.totalProducts}</div></div>
+        <div class="stat-card"><div class="st-label">Active products</div><div class="st-value">${o.activeProducts}</div></div>
+        <div class="stat-card"><div class="st-label">Pending orders</div><div class="st-value">${o.pendingOrders}</div></div>
+        <div class="stat-card"><div class="st-label">Delivered orders</div><div class="st-value">${o.deliveredOrders}</div></div>
+        <div class="stat-card"><div class="st-label">Total revenue</div><div class="st-value">₹${o.totalRevenue}</div></div>
+        <div class="stat-card"><div class="st-label">Unread messages</div><div class="st-value">${o.unreadMessages}</div></div>
+      `;
+      document.querySelectorAll("#availabilityTabs button").forEach(b => b.classList.toggle("active", b.dataset.val === o.availability));
+
+      const notice = document.getElementById("approvalNotice");
+      if (o.approvalStatus !== "approved"){
+        notice.innerHTML = `<div class="panel-card" style="border-color:var(--gold);"><b>Account status: ${o.approvalStatus}.</b> ${o.approvalStatus === "pending" ? "An admin needs to approve your farmer account before your products go live." : "Contact support for details."}</div>`;
+      } else {
+        notice.innerHTML = "";
+      }
+    } catch(err){ showToast(err.message); }
+  }
+
+  document.getElementById("availabilityTabs").addEventListener("click", async (e) => {
+    const btn = e.target.closest("button");
+    if (!btn) return;
+    try {
+      await Api.updateProfile({ availability: btn.dataset.val });
+      document.querySelectorAll("#availabilityTabs button").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      showToast("Availability updated");
+    } catch(err){ showToast(err.message); }
+  });
+
+  async function loadMyProducts(){
+    const body = document.getElementById("myProductsBody");
+    body.innerHTML = `<tr><td colspan="6">Loading…</td></tr>`;
+    try {
+      const res = await Api.myProducts();
+      if (!res.products.length){ body.innerHTML = `<tr><td colspan="6">No products yet — add one above.</td></tr>`; return; }
+      body.innerHTML = res.products.map(p => `
+        <tr>
+          <td>${p.icon} ${p.name}</td>
+          <td>₹${p.prices["250g"] ?? "—"}</td>
+          <td>₹${p.prices["500g"] ?? "—"}</td>
+          <td>₹${p.prices["1kg"] ?? "—"}</td>
+          <td>${p.isActive ? '<span class="badge badge-instock">Active</span>' : '<span class="badge badge-outofstock">Hidden</span>'}</td>
+          <td>
+            <button class="mini-btn" data-toggle="${p._id}" data-active="${p.isActive}">${p.isActive ? "Unpublish" : "Publish"}</button>
+            <button class="mini-btn" data-del="${p._id}">Delete</button>
+          </td>
+        </tr>`).join("");
+
+      body.querySelectorAll("[data-toggle]").forEach(btn => btn.addEventListener("click", async () => {
+        try {
+          const fd = new FormData(); fd.append("isActive", btn.dataset.active === "true" ? "false" : "true");
+          await Api.updateProduct(btn.dataset.toggle, fd);
+          loadMyProducts();
+        } catch(err){ showToast(err.message); }
+      }));
+      body.querySelectorAll("[data-del]").forEach(btn => btn.addEventListener("click", async () => {
+        if (!confirm("Delete this product?")) return;
+        try { await Api.deleteProduct(btn.dataset.del); showToast("Product deleted"); loadMyProducts(); }
+        catch(err){ showToast(err.message); }
+      }));
+    } catch(err){ body.innerHTML = `<tr><td colspan="6">${err.message}</td></tr>`; }
+  }
+
+  document.getElementById("productForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const fd = new FormData();
+    fd.append("name", document.getElementById("pfName").value.trim());
+    fd.append("type", document.getElementById("pfType").value);
+    fd.append("icon", document.getElementById("pfIcon").value.trim() || "🥗");
+    fd.append("origin", document.getElementById("pfOrigin").value.trim());
+    fd.append("calories", document.getElementById("pfCalories").value || 0);
+    fd.append("nutrient", document.getElementById("pfNutrient").value.trim());
+    fd.append("organic", document.getElementById("pfOrganic").checked);
+    fd.append("prices", JSON.stringify({
+      "250g": Number(document.getElementById("pfPrice250").value),
+      "500g": Number(document.getElementById("pfPrice500").value),
+      "1kg": Number(document.getElementById("pfPrice1kg").value)
+    }));
+    fd.append("stock", JSON.stringify({
+      "250g": Number(document.getElementById("pfStock250").value),
+      "500g": Number(document.getElementById("pfStock500").value),
+      "1kg": Number(document.getElementById("pfStock1kg").value)
+    }));
+    try {
+      await Api.createProduct(fd);
+      showToast("Product added");
+      e.target.reset();
+      loadMyProducts();
+    } catch(err){ showToast(err.message); }
+  });
+
+  let currentOrderStatus = "";
+  document.getElementById("orderStatusTabs").addEventListener("click", (e) => {
+    const btn = e.target.closest("button");
+    if (!btn) return;
+    document.querySelectorAll("#orderStatusTabs button").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    currentOrderStatus = btn.dataset.status;
+    loadOrders();
+  });
+
+  async function loadOrders(){
+    const body = document.getElementById("ordersBody");
+    body.innerHTML = `<tr><td colspan="5">Loading…</td></tr>`;
+    try {
+      const res = await Api.farmerOrders(currentOrderStatus);
+      if (!res.orders.length){ body.innerHTML = `<tr><td colspan="5">No orders here.</td></tr>`; return; }
+      body.innerHTML = res.orders.map(o => `
+        <tr>
+          <td>${o.customer?.name || "Customer"}<br><small>${o.customer?.phone || ""}</small></td>
+          <td>${o.items.map(i => `${i.name} (${i.weight} ×${i.quantity})`).join("<br>")}</td>
+          <td>₹${o.itemsTotal}</td>
+          <td><span class="order-status status-${o.status}">${o.status.replace(/_/g," ")}</span></td>
+          <td>
+            ${o.status === "pending" ? `
+              <button class="mini-btn" data-accept="${o._id}">Accept</button>
+              <button class="mini-btn" data-reject="${o._id}">Reject</button>` : `
+              <select class="form-select mini-status" data-order="${o._id}" style="font-size:0.78rem; padding:6px;">
+                ${["accepted","preparing","out_for_delivery","delivered","cancelled"].map(s => `<option value="${s}" ${s===o.status?"selected":""}>${s.replace(/_/g," ")}</option>`).join("")}
+              </select>`}
+          </td>
+        </tr>`).join("");
+
+      body.querySelectorAll("[data-accept]").forEach(btn => btn.addEventListener("click", async () => {
+        try { await Api.updateOrderStatus(btn.dataset.accept, { status: "accepted" }); showToast("Order accepted"); loadOrders(); }
+        catch(err){ showToast(err.message); }
+      }));
+      body.querySelectorAll("[data-reject]").forEach(btn => btn.addEventListener("click", async () => {
+        const reason = prompt("Reason for rejecting (optional):") || "";
+        try { await Api.updateOrderStatus(btn.dataset.reject, { status: "rejected", rejectionReason: reason }); showToast("Order rejected"); loadOrders(); }
+        catch(err){ showToast(err.message); }
+      }));
+      body.querySelectorAll(".mini-status").forEach(sel => sel.addEventListener("change", async () => {
+        try { await Api.updateOrderStatus(sel.dataset.order, { status: sel.value }); showToast("Order updated"); loadOrders(); }
+        catch(err){ showToast(err.message); }
+      }));
+    } catch(err){ body.innerHTML = `<tr><td colspan="5">${err.message}</td></tr>`; }
+  }
+
+  async function loadAnalytics(){
+    try {
+      const res = await Api.farmerRevenue(30);
+      const chart = document.getElementById("revenueChart");
+      if (!res.series.length){ chart.innerHTML = `<p class="p-origin">No revenue yet.</p>`; }
+      else {
+        const max = Math.max(...res.series.map(r => r.revenue), 1);
+        chart.innerHTML = res.series.map(r => `<div class="bar-col" title="${r._id}: ₹${r.revenue}" style="height:${Math.max(4,(r.revenue/max)*140)}px;"></div>`).join("");
+      }
+    } catch(err){ showToast(err.message); }
+
+    try {
+      const res = await Api.farmerTopProducts();
+      const body = document.getElementById("topProductsBody");
+      body.innerHTML = res.topProducts.length
+        ? res.topProducts.map(p => `<tr><td>${p.name}</td><td>${p.unitsSold}</td><td>₹${p.revenue}</td></tr>`).join("")
+        : `<tr><td colspan="3">No sales yet.</td></tr>`;
+    } catch(err){ /* ignore */ }
+  }
+
+  async function loadMessages(){
+    const wrap = document.getElementById("messagesList");
+    wrap.innerHTML = `<p class="p-origin">Loading…</p>`;
+    try {
+      const res = await Api.farmerMessages();
+      if (!res.messages.length){ wrap.innerHTML = `<p class="p-origin">No messages yet.</p>`; return; }
+      wrap.innerHTML = res.messages.map(m => `
+        <div class="order-card">
+          <div style="display:flex; justify-content:space-between;">
+            <b>${m.name}</b><span class="order-status status-${m.status === 'new' ? 'pending' : 'delivered'}">${m.status}</span>
+          </div>
+          <div style="margin-top:6px; font-size:0.85rem;">${m.subject ? `<i>${m.subject}</i><br>` : ""}${m.message}</div>
+          <div style="margin-top:6px; font-size:0.8rem; color:var(--ink-soft);">${m.email || ""} ${m.phone || ""}</div>
+          ${m.status === "new" ? `<button class="mini-btn" data-read="${m._id}" style="margin-top:8px;">Mark read</button>` : ""}
+        </div>`).join("");
+      wrap.querySelectorAll("[data-read]").forEach(btn => btn.addEventListener("click", async () => {
+        await Api.updateMessageStatus(btn.dataset.read, "read"); loadMessages();
+      }));
+    } catch(err){ wrap.innerHTML = `<p class="p-origin">${err.message}</p>`; }
+  }
+
+  document.getElementById("profileForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    try {
+      await Api.updateProfile({
+        farmName: document.getElementById("prFarmName").value.trim(),
+        storeAddress: document.getElementById("prAddress").value.trim(),
+        whatsapp: document.getElementById("prWhatsapp").value.trim(),
+        description: document.getElementById("prDescription").value.trim()
+      });
+      showToast("Profile saved");
+    } catch(err){ showToast(err.message); }
+  });
+
+  document.getElementById("farmerLogoutBtn").addEventListener("click", () => {
+    Auth.clear();
+    window.location.href = "index.html";
+  });
+
+  (async function init(){
+    if (!Auth.isLoggedIn()){ document.getElementById("guard").classList.remove("hidden"); return; }
+    try {
+      const res = await Api.me();
+      if (res.user.role !== "farmer"){
+        document.getElementById("guard").classList.remove("hidden");
+        document.querySelector("#guard p").textContent = "This dashboard is for farmer accounts only.";
+        return;
+      }
+      me = res.user;
+      document.getElementById("farmerName").textContent = `👤 ${me.name}`;
+      document.getElementById("prFarmName").value = me.farmerProfile?.farmName || "";
+      document.getElementById("prAddress").value = me.farmerProfile?.storeAddress || "";
+      document.getElementById("prWhatsapp").value = me.farmerProfile?.whatsapp || "";
+      document.getElementById("prDescription").value = me.farmerProfile?.description || "";
+      document.getElementById("dashShell").classList.remove("hidden");
+      loadOverview();
+    } catch(err){
+      Auth.clear();
+      document.getElementById("guard").classList.remove("hidden");
+    }
+  })();
+</script>
+</body>
+</html>

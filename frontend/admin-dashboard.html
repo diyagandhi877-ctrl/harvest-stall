@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard — Harvest Stall</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/extend.css">
+</head>
+<body>
+
+<div id="guard" class="login-guard hidden">
+  <div class="mark" style="font-size:2.4rem;">🌿</div>
+  <h2>Admin sign-in required</h2>
+  <p>Log in with an admin account on the main site, then come back here.</p>
+  <a class="btn-solid" href="index.html">Go to Harvest Stall</a>
+</div>
+
+<div class="dash-shell hidden" id="dashShell">
+  <aside class="dash-sidebar">
+    <div class="brand"><span class="mark">🌿</span>Harvest Stall <span style="font-size:0.7rem; color:var(--ink-soft);">Admin</span></div>
+    <button class="dash-nav-link active" data-view="overview">📊 Overview</button>
+    <button class="dash-nav-link" data-view="farmers">🌾 Farmers</button>
+    <button class="dash-nav-link" data-view="customers">🧺 Customers</button>
+    <button class="dash-nav-link" data-view="products">🥕 Products</button>
+    <button class="dash-nav-link" data-view="orders">📦 Orders</button>
+    <button class="dash-nav-link" data-view="categories">🏷️ Categories</button>
+    <button class="dash-nav-link" data-view="announcements">📣 Announcements</button>
+    <a class="dash-nav-link" href="index.html">🧺 Back to storefront</a>
+    <button class="dash-nav-link" id="adminLogoutBtn" style="margin-top:auto; color:var(--tomato);">🚪 Logout</button>
+  </aside>
+
+  <main class="dash-main">
+    <div class="dash-topbar">
+      <h1 id="viewTitle">Overview</h1>
+      <span id="adminName" class="user-chip" style="cursor:default;"></span>
+    </div>
+
+    <!-- Overview -->
+    <section id="view-overview" class="dash-view">
+      <div class="stat-grid" id="overviewStats"></div>
+    </section>
+
+    <!-- Farmers -->
+    <section id="view-farmers" class="dash-view hidden">
+      <div class="panel-card">
+        <div class="tabs-row" id="farmerStatusTabs">
+          <button class="active" data-status="">All</button>
+          <button data-status="pending">Pending approval</button>
+          <button data-status="approved">Approved</button>
+          <button data-status="rejected">Rejected</button>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Farmer</th><th>Farm</th><th>Contact</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="farmersBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Customers -->
+    <section id="view-customers" class="dash-view hidden">
+      <div class="panel-card">
+        <input class="form-input" type="text" id="customerSearch" placeholder="Search customers by name or email…" style="max-width:340px; margin-bottom:14px;">
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Name</th><th>Contact</th><th>Joined</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="customersBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Products -->
+    <section id="view-products" class="dash-view hidden">
+      <div class="panel-card">
+        <input class="form-input" type="text" id="productSearch" placeholder="Search products…" style="max-width:340px; margin-bottom:14px;">
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Product</th><th>Farmer</th><th>Price (500g)</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="productsBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Orders -->
+    <section id="view-orders" class="dash-view hidden">
+      <div class="panel-card">
+        <div class="tabs-row" id="orderStatusTabs">
+          <button class="active" data-status="">All</button>
+          <button data-status="pending">Pending</button>
+          <button data-status="delivered">Delivered</button>
+          <button data-status="rejected">Rejected</button>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Customer</th><th>Farmer</th><th>Total</th><th>Status</th><th>Date</th></tr></thead>
+            <tbody id="ordersBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Categories -->
+    <section id="view-categories" class="dash-view hidden">
+      <div class="panel-card">
+        <h2>Add category</h2>
+        <form id="categoryForm" class="pill-toggle" style="max-width:560px;">
+          <input class="form-input" type="text" id="catName" placeholder="Name" required style="flex:2;">
+          <input class="form-input" type="text" id="catSlug" placeholder="slug" required style="flex:1;">
+          <select class="form-select" id="catType" style="flex:1;">
+            <option value="fruit">Fruit</option>
+            <option value="veg">Vegetable</option>
+            <option value="other">Other</option>
+          </select>
+          <button type="submit" class="btn-solid">Add</button>
+        </form>
+      </div>
+      <div class="panel-card">
+        <h2>Categories</h2>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Name</th><th>Slug</th><th>Type</th><th>Actions</th></tr></thead>
+            <tbody id="categoriesBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Announcements -->
+    <section id="view-announcements" class="dash-view hidden">
+      <div class="panel-card">
+        <h2>Send an announcement</h2>
+        <form id="announceForm" class="form-stack" style="max-width:520px;">
+          <input class="form-input" type="text" id="anTitle" placeholder="Title" required>
+          <textarea class="form-textarea" id="anBody" placeholder="Message" required></textarea>
+          <select class="form-select" id="anAudience" style="max-width:220px;">
+            <option value="all">Everyone</option>
+            <option value="customers">Customers only</option>
+            <option value="farmers">Farmers only</option>
+          </select>
+          <button type="submit" class="btn-solid" style="width:fit-content;">Send announcement</button>
+        </form>
+      </div>
+      <div class="panel-card">
+        <h2>Sent announcements</h2>
+        <div id="announcementsList"></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>window.HARVEST_API_BASE = "http://localhost:5000/api";</script>
+<script src="js/api.js"></script>
+<script src="js/i18n.js"></script>
+<script>
+  const toast = document.getElementById("toast");
+  function showToast(msg){
+    toast.textContent = msg; toast.classList.add("show");
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(()=> toast.classList.remove("show"), 2200);
+  }
+
+  function switchView(view){
+    document.querySelectorAll(".dash-nav-link[data-view]").forEach(b => b.classList.toggle("active", b.dataset.view === view));
+    document.querySelectorAll(".dash-view").forEach(s => s.classList.add("hidden"));
+    document.getElementById(`view-${view}`).classList.remove("hidden");
+    document.getElementById("viewTitle").textContent = document.querySelector(`.dash-nav-link[data-view="${view}"]`).textContent.trim();
+    if (view === "farmers") loadFarmers();
+    if (view === "customers") loadCustomers();
+    if (view === "products") loadProducts();
+    if (view === "orders") loadOrders();
+    if (view === "categories") loadCategories();
+    if (view === "announcements") loadAnnouncements();
+  }
+  document.querySelectorAll(".dash-nav-link[data-view]").forEach(btn => btn.addEventListener("click", () => switchView(btn.dataset.view)));
+
+  async function loadOverview(){
+    try {
+      const res = await Api.adminDashboard();
+      const s = res.stats;
+      document.getElementById("overviewStats").innerHTML = `
+        <div class="stat-card"><div class="st-label">Total customers</div><div class="st-value">${s.totalCustomers}</div></div>
+        <div class="stat-card"><div class="st-label">Total farmers</div><div class="st-value">${s.totalFarmers}</div></div>
+        <div class="stat-card"><div class="st-label">Pending farmers</div><div class="st-value">${s.pendingFarmers}</div></div>
+        <div class="stat-card"><div class="st-label">Total products</div><div class="st-value">${s.totalProducts}</div></div>
+        <div class="stat-card"><div class="st-label">Total orders</div><div class="st-value">${s.totalOrders}</div></div>
+        <div class="stat-card"><div class="st-label">Total revenue</div><div class="st-value">₹${s.totalRevenue}</div></div>
+      `;
+    } catch(err){ showToast(err.message); }
+  }
+
+  let farmerStatusFilter = "";
+  document.getElementById("farmerStatusTabs").addEventListener("click", (e) => {
+    const btn = e.target.closest("button"); if (!btn) return;
+    document.querySelectorAll("#farmerStatusTabs button").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active"); farmerStatusFilter = btn.dataset.status; loadFarmers();
+  });
+
+  async function loadFarmers(){
+    const body = document.getElementById("farmersBody");
+    body.innerHTML = `<tr><td colspan="5">Loading…</td></tr>`;
+    try {
+      const res = await Api.adminFarmers(farmerStatusFilter);
+      if (!res.farmers.length){ body.innerHTML = `<tr><td colspan="5">No farmers here.</td></tr>`; return; }
+      body.innerHTML = res.farmers.map(f => `
+        <tr>
+          <td>${f.name}</td>
+          <td>${f.farmerProfile?.farmName || "—"}</td>
+          <td>${f.email || ""}<br>${f.phone || ""}</td>
+          <td><span class="approval-badge approval-${f.farmerProfile?.approvalStatus}">${f.farmerProfile?.approvalStatus}</span> ${!f.isActive ? '<span class="badge badge-outofstock">Deactivated</span>':''}</td>
+          <td>
+            <button class="mini-btn" data-approve="${f._id}">Approve</button>
+            <button class="mini-btn" data-reject="${f._id}">Reject</button>
+            <button class="mini-btn" data-toggleactive="${f._id}" data-active="${f.isActive}">${f.isActive ? "Deactivate" : "Activate"}</button>
+          </td>
+        </tr>`).join("");
+
+      body.querySelectorAll("[data-approve]").forEach(btn => btn.addEventListener("click", async () => {
+        try { await Api.setFarmerApproval(btn.dataset.approve, { status: "approved" }); showToast("Farmer approved"); loadFarmers(); }
+        catch(err){ showToast(err.message); }
+      }));
+      body.querySelectorAll("[data-reject]").forEach(btn => btn.addEventListener("click", async () => {
+        const reason = prompt("Reason for rejection (optional):") || "";
+        try { await Api.setFarmerApproval(btn.dataset.reject, { status: "rejected", rejectionReason: reason }); showToast("Farmer rejected"); loadFarmers(); }
+        catch(err){ showToast(err.message); }
+      }));
+      body.querySelectorAll("[data-toggleactive]").forEach(btn => btn.addEventListener("click", async () => {
+        try { await Api.setUserActive(btn.dataset.toggleactive, btn.dataset.active !== "true"); loadFarmers(); }
+        catch(err){ showToast(err.message); }
+      }));
+    } catch(err){ body.innerHTML = `<tr><td colspan="5">${err.message}</td></tr>`; }
+  }
+
+  let customerSearchTimer;
+  document.getElementById("customerSearch").addEventListener("input", (e) => {
+    clearTimeout(customerSearchTimer);
+    customerSearchTimer = setTimeout(() => loadCustomers(e.target.value), 300);
+  });
+
+  async function loadCustomers(q){
+    const body = document.getElementById("customersBody");
+    body.innerHTML = `<tr><td colspan="5">Loading…</td></tr>`;
+    try {
+      const res = await Api.adminCustomers(q);
+      if (!res.customers.length){ body.innerHTML = `<tr><td colspan="5">No customers found.</td></tr>`; return; }
+      body.innerHTML = res.customers.map(c => `
+        <tr>
+          <td>${c.name}</td>
+          <td>${c.email || ""}<br>${c.phone || ""}</td>
+          <td>${new Date(c.createdAt).toLocaleDateString()}</td>
+          <td>${c.isActive ? '<span class="badge badge-instock">Active</span>' : '<span class="badge badge-outofstock">Deactivated</span>'}</td>
+          <td><button class="mini-btn" data-toggleactive="${c._id}" data-active="${c.isActive}">${c.isActive ? "Deactivate" : "Activate"}</button></td>
+        </tr>`).join("");
+      body.querySelectorAll("[data-toggleactive]").forEach(btn => btn.addEventListener("click", async () => {
+        try { await Api.setUserActive(btn.dataset.toggleactive, btn.dataset.active !== "true"); loadCustomers(); }
+        catch(err){ showToast(err.message); }
+      }));
+    } catch(err){ body.innerHTML = `<tr><td colspan="5">${err.message}</td></tr>`; }
+  }
+
+  let productSearchTimer;
+  document.getElementById("productSearch").addEventListener("input", (e) => {
+    clearTimeout(productSearchTimer);
+    productSearchTimer = setTimeout(() => loadProducts(e.target.value), 300);
+  });
+
+  async function loadProducts(q){
+    const body = document.getElementById("productsBody");
+    body.innerHTML = `<tr><td colspan="5">Loading…</td></tr>`;
+    try {
+      const res = await Api.adminProducts(q);
+      if (!res.products.length){ body.innerHTML = `<tr><td colspan="5">No products found.</td></tr>`; return; }
+      body.innerHTML = res.products.map(p => `
+        <tr>
+          <td>${p.icon} ${p.name}</td>
+          <td>${p.farmer?.farmerProfile?.farmName || p.farmer?.name || "—"}</td>
+          <td>₹${p.prices?.["500g"] ?? "—"}</td>
+          <td>${p.isActive ? '<span class="badge badge-instock">Active</span>' : '<span class="badge badge-outofstock">Hidden</span>'}</td>
+          <td><button class="mini-btn" data-remove="${p._id}">Remove</button></td>
+        </tr>`).join("");
+      body.querySelectorAll("[data-remove]").forEach(btn => btn.addEventListener("click", async () => {
+        if (!confirm("Remove this product from the platform?")) return;
+        try { await Api.adminRemoveProduct(btn.dataset.remove); showToast("Product removed"); loadProducts(); }
+        catch(err){ showToast(err.message); }
+      }));
+    } catch(err){ body.innerHTML = `<tr><td colspan="5">${err.message}</td></tr>`; }
+  }
+
+  let orderStatusFilter = "";
+  document.getElementById("orderStatusTabs").addEventListener("click", (e) => {
+    const btn = e.target.closest("button"); if (!btn) return;
+    document.querySelectorAll("#orderStatusTabs button").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active"); orderStatusFilter = btn.dataset.status; loadOrders();
+  });
+
+  async function loadOrders(){
+    const body = document.getElementById("ordersBody");
+    body.innerHTML = `<tr><td colspan="5">Loading…</td></tr>`;
+    try {
+      const res = await Api.adminOrders(orderStatusFilter);
+      if (!res.orders.length){ body.innerHTML = `<tr><td colspan="5">No orders found.</td></tr>`; return; }
+      body.innerHTML = res.orders.map(o => `
+        <tr>
+          <td>${o.customer?.name || "—"}</td>
+          <td>${o.farmer?.farmerProfile?.farmName || o.farmer?.name || "—"}</td>
+          <td>₹${o.itemsTotal}</td>
+          <td><span class="order-status status-${o.status}">${o.status.replace(/_/g," ")}</span></td>
+          <td>${new Date(o.createdAt).toLocaleDateString()}</td>
+        </tr>`).join("");
+    } catch(err){ body.innerHTML = `<tr><td colspan="5">${err.message}</td></tr>`; }
+  }
+
+  async function loadCategories(){
+    const body = document.getElementById("categoriesBody");
+    body.innerHTML = `<tr><td colspan="4">Loading…</td></tr>`;
+    try {
+      const res = await Api.categories();
+      if (!res.categories.length){ body.innerHTML = `<tr><td colspan="4">No categories yet.</td></tr>`; return; }
+      body.innerHTML = res.categories.map(c => `
+        <tr><td>${c.icon || ""} ${c.name}</td><td>${c.slug}</td><td>${c.type}</td>
+        <td><button class="mini-btn" data-del="${c._id}">Delete</button></td></tr>`).join("");
+      body.querySelectorAll("[data-del]").forEach(btn => btn.addEventListener("click", async () => {
+        try { await Api.deleteCategory(btn.dataset.del); loadCategories(); }
+        catch(err){ showToast(err.message); }
+      }));
+    } catch(err){ body.innerHTML = `<tr><td colspan="4">${err.message}</td></tr>`; }
+  }
+
+  document.getElementById("categoryForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    try {
+      await Api.createCategory({
+        name: document.getElementById("catName").value.trim(),
+        slug: document.getElementById("catSlug").value.trim().toLowerCase(),
+        type: document.getElementById("catType").value
+      });
+      e.target.reset();
+      showToast("Category added");
+      loadCategories();
+    } catch(err){ showToast(err.message); }
+  });
+
+  async function loadAnnouncements(){
+    const wrap = document.getElementById("announcementsList");
+    wrap.innerHTML = `<p class="p-origin">Loading…</p>`;
+    try {
+      const res = await Api.listAnnouncements();
+      wrap.innerHTML = res.announcements.length
+        ? res.announcements.map(a => `<div class="order-card"><b>${a.title}</b> <span class="badge badge-instock">${a.audience}</span><div style="margin-top:6px;">${a.body}</div></div>`).join("")
+        : `<p class="p-origin">No announcements sent yet.</p>`;
+    } catch(err){ wrap.innerHTML = `<p class="p-origin">${err.message}</p>`; }
+  }
+
+  document.getElementById("announceForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    try {
+      await Api.sendAnnouncement({
+        title: document.getElementById("anTitle").value.trim(),
+        body: document.getElementById("anBody").value.trim(),
+        audience: document.getElementById("anAudience").value
+      });
+      e.target.reset();
+      showToast("Announcement sent");
+      loadAnnouncements();
+    } catch(err){ showToast(err.message); }
+  });
+
+  document.getElementById("adminLogoutBtn").addEventListener("click", () => {
+    Auth.clear();
+    window.location.href = "index.html";
+  });
+
+  (async function init(){
+    if (!Auth.isLoggedIn()){ document.getElementById("guard").classList.remove("hidden"); return; }
+    try {
+      const res = await Api.me();
+      if (res.user.role !== "admin"){
+        document.getElementById("guard").classList.remove("hidden");
+        document.querySelector("#guard p").textContent = "This dashboard is for admin accounts only.";
+        return;
+      }
+      document.getElementById("adminName").textContent = `👤 ${res.user.name}`;
+      document.getElementById("dashShell").classList.remove("hidden");
+      loadOverview();
+    } catch(err){
+      Auth.clear();
+      document.getElementById("guard").classList.remove("hidden");
+    }
+  })();
+</script>
+</body>
+</html>
