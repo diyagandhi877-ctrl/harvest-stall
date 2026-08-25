@@ -104,22 +104,30 @@ const getProduct = asyncHandler(async (req, res) => {
 // @route POST /api/products
 // @access Private/Farmer
 const createProduct = asyncHandler(async (req, res) => {
-  const {
-    name,
-    type,
-    category,
-    icon,
-    origin,
-    description,
-    organic,
-    calories,
-    nutrient,
-    nutrientPct,
-    prices,
-    mrp,
-    stock
-  } = req.body;
+ const {
+  name,
+  type,
+  category,
+  icon,
+  origin,
+  description,
+  organic,
+  calories,
+  nutrient,
+  nutrientPct,
+  mrp
+} = req.body;
 
+let prices = req.body.prices;
+let stock = req.body.stock;
+
+if (typeof prices === "string") {
+  prices = JSON.parse(prices);
+}
+
+if (typeof stock === "string") {
+  stock = JSON.parse(stock);
+}
   if (!name || !type || !prices) {
     res.status(400);
     throw new Error("name, type, and prices are required");
