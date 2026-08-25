@@ -2,7 +2,7 @@
    Harvest Stall — API client
    Shared by index.html, farmer-dashboard.html, admin-dashboard.html
    ============================================================ */
-const API_BASE = "https://harvest-stall.onrender.com/api";
+const API_BASE = "https://harvest-stall-1.onrender.com/api";
 const Auth = {
   getToken(){ return localStorage.getItem("hs_token"); },
   setSession(token, user){
