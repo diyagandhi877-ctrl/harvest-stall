@@ -437,7 +437,31 @@
     <p class="eyebrow">Delivery address</p>
     <h2>Where should we deliver?</h2>
     <div id="checkoutAddressList" style="margin-top:14px;"></div>
-    <button class="btn-solid full" id="placeOrderBtn" style="margin-top:16px;">Place order</button>
+    <div id="checkoutAddressList" style="margin-top:14px;"></div>
+
+<p class="eyebrow" style="margin-top:20px;">Payment method</p>
+
+<div style="display:grid; gap:10px; margin-top:10px;">
+
+  <label class="addr-card" style="display:block; cursor:pointer;">
+    <input type="radio" name="paymentMethod" value="upi" checked>
+    <b>UPI</b>
+    <br>
+    <span style="opacity:.7;">Test payment</span>
+  </label>
+
+  <label class="addr-card" style="display:block; cursor:pointer;">
+    <input type="radio" name="paymentMethod" value="card">
+    <b>Card</b>
+    <br>
+    <span style="opacity:.7;">Test payment</span>
+  </label>
+
+</div>
+
+<button class="btn-solid full" id="placeOrderBtn" style="margin-top:16px;">
+  Pay & place order
+</button>
   </div>
 </div>
 
@@ -787,18 +811,68 @@
 
   document.getElementById("closeCheckout").addEventListener("click", () => document.getElementById("checkoutOverlay").classList.remove("open"));
 
-  document.getElementById("placeOrderBtn").addEventListener("click", async () => {
-    const selected = document.querySelector('input[name="checkoutAddr"]:checked');
-    if (!selected){ showToast("Select a delivery address"); return; }
-    try {
-      await Api.checkout({ addressId: selected.value, paymentMethod: "cod" });
-      backendCart = { items: [] };
-      showToast("Order placed! Track it under My Orders.");
-      document.getElementById("checkoutOverlay").classList.remove("open");
-      cartDrawer.classList.remove("open");
-      updateCartBadge();
-    } catch(err){ showToast(err.message); }
-  });
+ document.getElementById("placeOrderBtn").addEventListener("click", async () => {
+
+  const selected = document.querySelector('input[name="checkoutAddr"]:checked');
+
+  if (!selected){
+    showToast("Select a delivery address");
+    return;
+  }
+
+  try {
+
+    // Get current cart total
+    const items = cartItems();
+
+    if (items.length === 0){
+      showToast("Your cart is empty");
+      return;
+    }
+
+    const total = items.reduce((sum, item) => {
+      return sum + (Number(item.price || 0) * Number(item.qty || item.quantity || 1));
+    }, 0);
+
+    // Simulate payment
+    showToast("Processing test payment...");
+
+   const paymentMethod =
+  document.querySelector('input[name="paymentMethod"]:checked')?.value || "upi";
+
+const payment = await Api.testPayment({
+  amount: total,
+  paymentMethod
+});
+
+    if (!payment.success || payment.paymentStatus !== "paid"){
+      throw new Error("Test payment failed");
+    }
+
+    // Create the actual order after successful test payment
+    await Api.checkout({
+  addressId: selected.value,
+  paymentMethod,
+  paymentId: payment.paymentId
+});
+
+    backendCart = { items: [] };
+
+    showToast("Test payment successful! Order placed.");
+
+    document.getElementById("checkoutOverlay").classList.remove("open");
+
+    cartDrawer.classList.remove("open");
+
+    updateCartBadge();
+
+  } catch(err){
+
+    showToast(err.message || "Payment failed");
+
+  }
+
+});
 
   // ---------- contact seller modal ----------
   const sellerOverlay = document.getElementById("sellerOverlay");

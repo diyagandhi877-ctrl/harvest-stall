@@ -8,8 +8,11 @@ const Product = require("../models/Product");
 // @route POST /api/orders/checkout
 // @access Private/Customer
 const checkout = asyncHandler(async (req, res) => {
-  const { addressId, paymentMethod = "cod" } = req.body;
-
+  const {
+  addressId,
+  paymentMethod = "cod",
+  paymentId
+} = req.body;
   const address = req.user.addresses.id(addressId);
   if (!address) {
     res.status(400);
@@ -70,7 +73,8 @@ const checkout = asyncHandler(async (req, res) => {
         pincode: address.pincode
       },
       itemsTotal,
-      paymentMethod,
+      paymentMethod,paymentStatus:
+      paymentMethod === "cod" ? "pending" : (paymentId ? "paid" : "pending"),
       status: "pending"
     });
     createdOrders.push(order);
@@ -172,4 +176,41 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
   res.json({ success: true, order });
 });
 
-module.exports = { checkout, myOrders, getOrder, farmerOrders, updateOrderStatus };
+// @desc  Simulate a test payment
+// @route POST /api/orders/test-payment
+// @access Private/Customer
+const testPayment = asyncHandler(async (req, res) => {
+  const { amount, paymentMethod = "upi" } = req.body;
+
+  if (!amount || Number(amount) <= 0) {
+    res.status(400);
+    throw new Error("Invalid payment amount");
+  }
+
+  const allowedMethods = ["upi", "card"];
+
+  if (!allowedMethods.includes(paymentMethod)) {
+    res.status(400);
+    throw new Error("Invalid payment method");
+  }
+
+  // Simulated payment only — no real money is transferred.
+  const paymentId = `TEST_${crypto.randomUUID()}`;
+
+  res.json({
+    success: true,
+    paymentStatus: "paid",
+    paymentId,
+    amount: Number(amount),
+    paymentMethod
+  });
+});
+
+module.exports = {
+  checkout,
+  myOrders,
+  getOrder,
+  farmerOrders,
+  updateOrderStatus,
+  testPayment
+};

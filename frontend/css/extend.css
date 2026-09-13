@@ -276,3 +276,1690 @@ textarea.form-textarea{
 .form-stack{ display:flex; flex-direction:column; gap:14px; max-width:520px; }
 .login-guard{ padding:80px 20px; text-align:center; color:var(--ink-soft); }
 .login-guard .btn-solid{ margin-top:16px; }
+/* ============================================================
+   UI/UX ANIMATION POLISH
+   Smooth, subtle animations — no JavaScript required
+   ============================================================ */
+
+/* ---------- general interactive transitions ---------- */
+
+button,
+a,
+input,
+select,
+textarea {
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+/* ---------- product cards ---------- */
+
+.card {
+  will-change: transform;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 38px -16px rgba(43, 58, 34, 0.5);
+}
+
+/* Product icon gently reacts to card hover */
+.card:hover .icon-plate {
+  transform: scale(1.06) rotate(-2deg);
+}
+
+.icon-plate {
+  transition: transform 0.25s ease;
+}
+
+/* ---------- buttons ---------- */
+
+.add-btn:hover,
+.buy-btn:hover,
+.cart-btn:hover,
+.btn-solid:hover {
+  transform: translateY(-2px);
+}
+
+.add-btn:active,
+.buy-btn:active,
+.cart-btn:active,
+.btn-solid:active {
+  transform: translateY(0) scale(0.97);
+}
+
+/* ---------- wishlist animation ---------- */
+
+.wish-btn:hover {
+  transform: scale(1.12);
+}
+
+.wish-btn:active {
+  transform: scale(0.9);
+}
+
+.wish-btn.active {
+  animation: heartPop 0.3s ease;
+}
+
+@keyframes heartPop {
+  0% {
+    transform: scale(0.8);
+  }
+
+  55% {
+    transform: scale(1.25);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* ---------- weight selector ---------- */
+
+.w-chip:hover {
+  transform: translateY(-2px);
+  border-color: var(--leaf);
+}
+
+.w-chip.active {
+  animation: chipSelect 0.2s ease;
+}
+
+@keyframes chipSelect {
+  0% {
+    transform: scale(0.95);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* ---------- navigation ---------- */
+
+.brand .mark {
+  transition: transform 0.3s ease;
+}
+
+.brand:hover .mark {
+  transform: rotate(12deg) scale(1.08);
+}
+
+.nav-utility .icon-btn:hover {
+  transform: translateY(-2px);
+  border-color: var(--leaf);
+}
+
+.role-link:hover,
+.account-btn:hover,
+.user-chip:hover {
+  transform: translateY(-2px);
+}
+
+/* ---------- section headings ---------- */
+
+.section-head h2 {
+  animation: headingReveal 0.6s ease both;
+}
+
+@keyframes headingReveal {
+  from {
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ---------- pricing cards ---------- */
+
+.pricing-card {
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.pricing-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 18px 36px -16px rgba(43, 58, 34, 0.4);
+}
+
+/* ---------- contact cards ---------- */
+
+.contact-card {
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.contact-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 36px -18px rgba(43, 58, 34, 0.4);
+}
+
+/* ---------- dashboard cards ---------- */
+
+.stat-card,
+.panel-card {
+  transition:
+    transform 0.22s ease,
+    box-shadow 0.22s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 32px -16px rgba(43, 58, 34, 0.35);
+}
+
+/* ---------- dashboard navigation ---------- */
+
+.dash-nav-link {
+  transition:
+    transform 0.18s ease,
+    background-color 0.18s ease,
+    color 0.18s ease;
+}
+
+.dash-nav-link:hover {
+  transform: translateX(3px);
+}
+
+/* ---------- form focus ---------- */
+
+input:focus,
+select:focus,
+textarea:focus {
+  transform: translateY(-1px);
+  box-shadow: 0 5px 14px -10px rgba(43, 58, 34, 0.5);
+}
+
+/* ---------- toast ---------- */
+
+.toast.show {
+  animation: toastBounce 0.35s ease;
+}
+
+@keyframes toastBounce {
+  0% {
+    transform: translateX(-50%) translateY(15px);
+    opacity: 0;
+  }
+
+  60% {
+    transform: translateX(-50%) translateY(-2px);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+}
+
+/* ---------- drawer ---------- */
+
+.side-drawer {
+  transition:
+    transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ---------- modal ---------- */
+
+.panel,
+.auth-panel {
+  animation: smoothModal 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes smoothModal {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ---------- respect reduced-motion accessibility ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+/* ============================================================
+   HOMEPAGE HERO UI/UX POLISH
+   ============================================================ */
+
+/* Improve hero readability */
+.hero.hero-photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(35, 48, 27, 0.38) 0%,
+      rgba(35, 48, 27, 0.16) 55%,
+      rgba(35, 48, 27, 0.04) 100%
+    );
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hero.hero-photo > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Give the hero text a cleaner reading width */
+.hero.hero-photo h1 {
+  max-width: 12ch;
+  text-wrap: balance;
+}
+
+.hero.hero-photo p {
+  max-width: 48ch;
+}
+
+/* Make the main CTA slightly stronger */
+.hero.hero-photo .btn-solid {
+  box-shadow: 0 10px 22px -10px rgba(0, 0, 0, 0.45);
+}
+
+.hero.hero-photo .btn-solid:hover {
+  box-shadow: 0 14px 26px -10px rgba(0, 0, 0, 0.5);
+}
+
+/* Improve hero statistics */
+.hero.hero-photo .hero-stats {
+  gap: 34px;
+  margin-top: 32px;
+}
+
+.hero.hero-photo .hero-stats div {
+  min-width: 78px;
+}
+
+.hero.hero-photo .hero-stats b {
+  font-size: 1.65rem;
+  line-height: 1;
+}
+
+.hero.hero-photo .hero-stats span {
+  margin-top: 4px;
+  font-size: 0.72rem;
+}
+
+/* Small visual divider between statistics */
+.hero.hero-photo .hero-stats div + div {
+  border-left: 1px solid rgba(255, 255, 255, 0.3);
+  padding-left: 28px;
+}
+
+/* Better spacing for the hero buttons */
+.hero.hero-photo .hero-cta {
+  margin-top: 28px;
+  gap: 14px;
+}
+
+/* Keep the hero comfortable on smaller screens */
+@media (max-width: 700px) {
+  .hero.hero-photo {
+    padding: 52px 24px 42px;
+  }
+
+  .hero.hero-photo h1 {
+    max-width: 11ch;
+  }
+
+  .hero.hero-photo .hero-stats {
+    gap: 18px;
+  }
+
+  .hero.hero-photo .hero-stats div + div {
+    padding-left: 18px;
+  }
+}
+/* ============================================================
+   HOMEPAGE PRODUCT SECTION UI/UX POLISH
+   ============================================================ */
+
+/* Cleaner product section spacing */
+.section-head {
+  margin-top: 54px;
+  margin-bottom: 24px;
+  align-items: center;
+}
+
+.section-head h2 {
+  font-size: 1.65rem;
+  letter-spacing: -0.02em;
+}
+
+/* Make the sorting control feel more polished */
+.sort {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 5px 8px 5px 12px;
+  box-shadow: 0 5px 16px -12px rgba(43, 58, 34, 0.35);
+}
+
+.sort select {
+  border: none;
+  outline: none;
+  background: transparent;
+  padding: 6px 8px;
+  cursor: pointer;
+}
+
+/* Give the product grid a little more breathing room */
+.grid {
+  gap: 26px;
+  padding-bottom: 48px;
+}
+
+/* Refined product cards */
+.card {
+  border: 1px solid rgba(218, 213, 190, 0.75);
+  overflow: visible;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.card:hover {
+  transform: translateY(-7px);
+  border-color: rgba(138, 145, 99, 0.55);
+  box-shadow: 0 22px 42px -18px rgba(43, 58, 34, 0.5);
+}
+
+/* Make the product icon/image area feel more intentional */
+.card-top {
+  margin-bottom: 12px;
+}
+
+.icon-plate {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.card:hover .icon-plate {
+  transform: scale(1.07);
+  box-shadow: 0 8px 18px -12px rgba(43, 58, 34, 0.45);
+}
+
+/* Product name readability */
+.card h3 {
+  line-height: 1.25;
+  margin-bottom: 3px;
+}
+
+.card .meta {
+  line-height: 1.4;
+}
+
+/* Nutrition information gets clearer separation */
+.nutri {
+  margin-top: 14px;
+  margin-bottom: 14px;
+}
+
+/* Weight choices are easier to scan */
+.weights {
+  margin-top: 8px;
+}
+
+.w-chip {
+  min-height: 34px;
+}
+
+/* Keep price and action visually balanced */
+.buy-row {
+  margin-top: 10px;
+  gap: 12px;
+}
+
+.buy-btn {
+  min-width: 88px;
+}
+
+/* Better responsive product layout */
+@media (max-width: 700px) {
+  .section-head {
+    margin-top: 40px;
+    margin-bottom: 18px;
+  }
+
+  .section-head h2 {
+    font-size: 1.4rem;
+  }
+
+  .sort {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .sort select {
+    flex: 1;
+  }
+
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .card {
+    padding: 18px 14px 16px;
+  }
+
+  .buy-row {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .buy-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 460px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+/* ============================================================
+   PRODUCT CARD INFORMATION HIERARCHY
+   ============================================================ */
+
+/* Keep the product identity visually strong */
+.card h3 {
+  font-size: 1.08rem;
+  line-height: 1.25;
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+
+.card .meta {
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+}
+
+/* Give the nutrition block a clearer visual boundary */
+.nutri {
+  padding: 13px 0;
+  margin: 14px 0;
+  border-top: 1px dashed var(--line);
+  border-bottom: 1px dashed var(--line);
+}
+
+.nutri b {
+  font-size: 0.95rem;
+}
+
+.nutri span {
+  font-size: 0.72rem;
+}
+
+/* Make weight selection feel like an important shopping step */
+.weights {
+  margin-top: 12px;
+}
+
+.w-chip {
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.w-chip:not(.active):hover {
+  background: var(--bg-soft);
+}
+
+/* Price should be the strongest information near the action */
+.buy-row {
+  margin-top: 14px;
+  align-items: center;
+}
+
+.buy-row .price {
+  font-family: 'Fraunces';
+  font-weight: 700;
+}
+
+.buy-row .price small {
+  display: block;
+  margin-top: 2px;
+  font-family: 'Karla';
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+/* Make Add button clearly actionable */
+.add-btn,
+.buy-btn {
+  font-weight: 700;
+  min-height: 40px;
+}
+
+/* Keep the product card comfortable on smaller screens */
+@media (max-width: 700px) {
+  .card h3 {
+    font-size: 1rem;
+  }
+
+  .nutri {
+    padding: 11px 0;
+    margin: 12px 0;
+  }
+
+  .w-chip {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+}
+/* ============================================================
+   WEIGHT & PRICING SECTION UI/UX POLISH
+   ============================================================ */
+
+.pricing-card {
+  border: 1px solid rgba(218, 213, 190, 0.8);
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.pricing-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(138, 145, 99, 0.6);
+  box-shadow: 0 18px 36px -16px rgba(43, 58, 34, 0.4);
+}
+
+/* Make the weight/price rows easier to scan */
+.pricing-card .price-row {
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.pricing-card .price-row:hover {
+  transform: translateX(3px);
+  background: var(--bg-soft);
+}
+
+/* Highlight the main pricing information */
+.pricing-card strong,
+.pricing-card b {
+  font-weight: 700;
+}
+
+/* Keep pricing section comfortable on smaller screens */
+@media (max-width: 700px) {
+  .pricing-card {
+    padding: 18px;
+  }
+
+  .pricing-card .price-row {
+    padding: 9px 10px;
+  }
+}
+/* ============================================================
+   HOMEPAGE CONTACT SECTION UI/UX POLISH
+   ============================================================ */
+
+.contact-section {
+  padding-top: 34px;
+  padding-bottom: 28px;
+}
+
+.contact-section .section-head {
+  margin-bottom: 6px;
+}
+
+.contact-card {
+  border: 1px solid rgba(218, 213, 190, 0.8);
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.contact-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(138, 145, 99, 0.55);
+  box-shadow: 0 18px 38px -18px rgba(43, 58, 34, 0.4);
+}
+
+/* Make form fields easier to use */
+.contact-form-grid {
+  gap: 16px;
+}
+
+.contact-form-grid .form-input,
+.contact-form-grid .form-textarea {
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.contact-form-grid .form-input:focus,
+.contact-form-grid .form-textarea:focus {
+  border-color: var(--leaf);
+  box-shadow: 0 5px 16px -12px rgba(43, 58, 34, 0.5);
+}
+
+/* Improve contact information readability */
+.contact-info-list {
+  gap: 16px;
+}
+
+.contact-info-item {
+  padding: 8px 0;
+}
+
+.contact-info-item .ci-icon {
+  transition: transform 0.22s ease, background-color 0.22s ease;
+}
+
+.contact-info-item:hover .ci-icon {
+  transform: scale(1.08);
+  background: var(--bg);
+}
+
+/* Make WhatsApp CTA feel more clickable */
+.whatsapp-btn {
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.whatsapp-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px -12px rgba(37, 211, 102, 0.7);
+}
+
+.whatsapp-btn:active {
+  transform: scale(0.97);
+}
+
+/* Social buttons */
+.social-row a {
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.social-row a:hover {
+  transform: translateY(-3px);
+  background: var(--bg);
+}
+
+/* Better mobile form layout */
+@media (max-width: 700px) {
+  .contact-section {
+    padding-top: 26px;
+  }
+
+  .contact-card {
+    padding: 20px;
+  }
+
+  .contact-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .contact-form-grid .full {
+    grid-column: auto;
+  }
+}
+/* ============================================================
+   HOMEPAGE FOOTER UI/UX POLISH
+   ============================================================ */
+
+.site-footer {
+  padding-top: 48px;
+  padding-bottom: 28px;
+  margin-top: 58px;
+}
+
+.footer-grid {
+  gap: 34px;
+}
+
+/* Footer brand */
+.footer-brand {
+  transition: transform 0.22s ease;
+}
+
+.footer-brand:hover {
+  transform: translateX(3px);
+}
+
+/* Footer headings */
+.footer-col h4 {
+  margin-bottom: 14px;
+  letter-spacing: 0.01em;
+}
+
+/* Footer links */
+.footer-col ul {
+  gap: 10px;
+}
+
+.footer-col a {
+  display: inline-block;
+  transition:
+    transform 0.2s ease,
+    color 0.2s ease;
+}
+
+.footer-col a:hover {
+  transform: translateX(3px);
+}
+
+/* Footer bottom area */
+.footer-bottom {
+  margin-top: 38px;
+  padding-top: 22px;
+}
+
+.footer-bottom a {
+  transition: color 0.2s ease;
+}
+
+.footer-bottom a:hover {
+  color: var(--leaf-dark);
+}
+
+/* Language selector in footer */
+.site-footer .lang-select {
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.site-footer .lang-select:hover {
+  transform: translateY(-2px);
+  border-color: var(--leaf);
+}
+
+/* Better mobile footer */
+@media (max-width: 700px) {
+  .site-footer {
+    margin-top: 42px;
+    padding-top: 36px;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 28px 20px;
+  }
+
+  .footer-bottom {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 14px;
+  }
+}
+
+@media (max-width: 460px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+}/* ============================================================
+   WHOLE-SITE MOBILE RESPONSIVENESS
+   Better spacing, buttons, grids and navigation on small screens
+   ============================================================ */
+
+@media (max-width: 860px) {
+
+  /* Main page spacing */
+  .container {
+    width: min(100% - 28px, 1180px);
+  }
+
+  /* Hero */
+  .hero.hero-photo {
+    padding: 54px 24px 42px;
+    border-radius: 20px;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.4rem, 8vw, 4rem);
+    line-height: 1.02;
+  }
+
+  .hero p {
+    max-width: 650px;
+  }
+
+  .hero-cta {
+    flex-wrap: wrap;
+  }
+
+  .hero-stats {
+    flex-wrap: wrap;
+    gap: 18px;
+  }
+
+  /* Product section */
+  .section-head {
+    gap: 16px;
+  }
+
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+  }
+
+  /* Pricing */
+  .pricing-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* Contact */
+  .contact-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Footer */
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+
+/* ============================================================
+   PHONE
+   ============================================================ */
+
+@media (max-width: 600px) {
+
+  /* Global */
+  body {
+    overflow-x: hidden;
+  }
+
+  .container {
+    width: min(100% - 20px, 1180px);
+  }
+
+  /* Header / navigation */
+  .site-header {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .nav {
+    gap: 10px;
+  }
+
+  .brand {
+    min-width: 0;
+  }
+
+  .brand .name {
+    font-size: 0.95rem;
+  }
+
+  .nav-utility {
+    gap: 6px;
+  }
+
+  .nav-utility .icon-btn {
+    width: 38px;
+    height: 38px;
+  }
+
+  .role-link,
+  .account-btn {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  /* Hero */
+  .hero.hero-photo {
+    padding: 42px 18px 32px;
+    border-radius: 18px;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.15rem, 11vw, 3.2rem);
+  }
+
+  .hero p {
+    font-size: 0.96rem;
+    line-height: 1.6;
+  }
+
+  .hero-cta {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .hero-cta button {
+    width: 100%;
+  }
+
+  .hero-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 28px;
+  }
+
+  .hero-stats > div {
+    min-width: 0;
+    padding: 0 6px;
+  }
+
+  .hero-stats b {
+    font-size: 1.35rem;
+  }
+
+  .hero-stats span {
+    font-size: 0.72rem;
+  }
+
+  /* Section headings */
+  .section-head {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .section-head h2 {
+    font-size: 1.7rem;
+  }
+
+  .sort {
+    width: 100%;
+  }
+
+  .sort select {
+    width: 100%;
+  }
+
+  /* Product grid */
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .card:hover {
+    transform: translateY(-3px);
+  }
+
+  /* Product cards */
+  .card {
+    width: 100%;
+  }
+
+  .weight-row {
+    flex-wrap: wrap;
+  }
+
+  .w-chip {
+    flex: 1 1 30%;
+    min-width: 72px;
+  }
+
+  .card-actions {
+    gap: 8px;
+  }
+
+  .card-actions button {
+    min-height: 42px;
+  }
+
+  /* Pricing */
+  .pricing-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .pricing-card {
+    padding: 20px 18px;
+  }
+
+  /* Contact */
+  .contact-card {
+    padding: 20px 18px;
+  }
+
+  .contact-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .contact-form-grid .full {
+    grid-column: auto;
+  }
+
+  /* Footer */
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .footer-bottom {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+
+/* ============================================================
+   VERY SMALL PHONES
+   ============================================================ */
+
+@media (max-width: 400px) {
+
+  .container {
+    width: min(100% - 16px, 1180px);
+  }
+
+  .hero.hero-photo {
+    padding: 36px 15px 28px;
+  }
+
+  .hero h1 {
+    font-size: 2.05rem;
+  }
+
+  .hero-stats {
+    gap: 4px;
+  }
+
+  .hero-stats b {
+    font-size: 1.15rem;
+  }
+
+  .hero-stats span {
+    font-size: 0.65rem;
+  }
+
+  .w-chip {
+    min-width: 0;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .card-actions {
+    flex-direction: column;
+  }
+
+  .card-actions button {
+    width: 100%;
+  }
+}
+/* ============================================================
+   CART + CHECKOUT UI/UX POLISH
+   ============================================================ */
+
+.cart-item,
+.checkout-item {
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.cart-item:hover,
+.checkout-item:hover {
+  transform: translateY(-2px);
+}
+
+/* Quantity controls */
+.qty-btn {
+  transition:
+    transform 0.15s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.qty-btn:hover {
+  transform: scale(1.08);
+  border-color: var(--leaf);
+}
+
+.qty-btn:active {
+  transform: scale(0.94);
+}
+
+/* Remove buttons */
+.remove-btn {
+  transition:
+    transform 0.2s ease,
+    color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.remove-btn:hover {
+  transform: scale(1.06);
+}
+
+/* Cart / checkout totals */
+.cart-total,
+.checkout-total,
+.order-total {
+  transition: box-shadow 0.2s ease;
+}
+
+.cart-total:hover,
+.checkout-total:hover {
+  box-shadow: 0 12px 28px -18px rgba(43, 58, 34, 0.45);
+}
+
+/* Checkout primary action */
+.checkout-btn,
+.place-order-btn,
+#checkoutBtn {
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.checkout-btn:hover,
+.place-order-btn:hover,
+#checkoutBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px -12px rgba(43, 58, 34, 0.6);
+}
+
+.checkout-btn:active,
+.place-order-btn:active,
+#checkoutBtn:active {
+  transform: scale(0.97);
+}
+
+/* Address / checkout options */
+.address-card,
+.payment-option {
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.address-card:hover,
+.payment-option:hover {
+  transform: translateY(-2px);
+  border-color: var(--leaf);
+}
+
+/* Forms */
+.checkout-form input,
+.checkout-form select,
+.checkout-form textarea {
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.checkout-form input:focus,
+.checkout-form select:focus,
+.checkout-form textarea:focus {
+  transform: translateY(-1px);
+  border-color: var(--leaf);
+  box-shadow: 0 6px 16px -12px rgba(43, 58, 34, 0.55);
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+
+  .cart-item,
+  .checkout-item {
+    padding: 14px;
+  }
+
+  .cart-item:hover,
+  .checkout-item:hover {
+    transform: none;
+  }
+
+  .cart-total,
+  .checkout-total {
+    padding: 18px;
+  }
+
+  .checkout-btn,
+  .place-order-btn,
+  #checkoutBtn {
+    width: 100%;
+    min-height: 46px;
+  }
+}/* ============================================================
+   LOADING + EMPTY + ERROR STATE UI/UX POLISH
+   ============================================================ */
+
+/* Loading text / messages */
+.loading,
+.loading-state {
+  min-height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.95rem;
+  padding: 24px;
+}
+
+/* Subtle loading animation when these elements exist */
+.loading::after,
+.loading-state::after {
+  content: "";
+  width: 18px;
+  height: 18px;
+  margin-left: 10px;
+  border: 2px solid var(--line);
+  border-top-color: var(--leaf);
+  border-radius: 50%;
+  animation: loadingSpin 0.75s linear infinite;
+}
+
+@keyframes loadingSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Empty states */
+.empty-state,
+.empty-message {
+  text-align: center;
+  padding: 42px 20px;
+  border: 1px dashed var(--line);
+  border-radius: var(--radius);
+  background: var(--card);
+  color: var(--muted);
+  animation: emptyReveal 0.35s ease both;
+}
+
+.empty-state h3,
+.empty-message h3 {
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+
+.empty-state p,
+.empty-message p {
+  max-width: 520px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+@keyframes emptyReveal {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Error messages */
+.error-message,
+.error-state {
+  padding: 16px 18px;
+  border-radius: 12px;
+  border: 1px solid rgba(193, 67, 42, 0.25);
+  background: rgba(193, 67, 42, 0.07);
+  color: var(--ink);
+  line-height: 1.5;
+  animation: errorReveal 0.3s ease both;
+}
+
+@keyframes errorReveal {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Success messages */
+.success-message,
+.success-state {
+  padding: 16px 18px;
+  border-radius: 12px;
+  border: 1px solid rgba(43, 58, 34, 0.22);
+  background: rgba(43, 58, 34, 0.07);
+  color: var(--ink);
+  line-height: 1.5;
+  animation: successReveal 0.3s ease both;
+}
+
+@keyframes successReveal {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Prevent awkward overflow on small screens */
+@media (max-width: 600px) {
+
+  .loading,
+  .loading-state {
+    min-height: 110px;
+    padding: 20px 14px;
+  }
+
+  .empty-state,
+  .empty-message {
+    padding: 32px 16px;
+  }
+
+  .error-message,
+  .error-state,
+  .success-message,
+  .success-state {
+    padding: 14px 15px;
+  }
+}/* ============================================================
+   DASHBOARD UI/UX POLISH
+   Consistent cards, navigation, tables and actions
+   ============================================================ */
+
+/* Dashboard page spacing */
+.dashboard-page {
+  padding-bottom: 40px;
+}
+
+/* Dashboard header */
+.dash-header {
+  transition: box-shadow 0.25s ease;
+}
+
+/* Navigation links */
+.dash-nav-link {
+  border-radius: 10px;
+  transition:
+    transform 0.18s ease,
+    background-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.dash-nav-link:hover {
+  transform: translateX(3px);
+}
+
+.dash-nav-link.active {
+  box-shadow: 0 6px 16px -12px rgba(43, 58, 34, 0.5);
+}
+
+/* Dashboard statistic cards */
+.stat-card {
+  border-radius: var(--radius);
+  transition:
+    transform 0.22s ease,
+    box-shadow 0.22s ease,
+    border-color 0.22s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 34px -18px rgba(43, 58, 34, 0.45);
+}
+
+/* Dashboard panels */
+.panel-card {
+  border-radius: var(--radius);
+  transition:
+    transform 0.22s ease,
+    box-shadow 0.22s ease;
+}
+
+.panel-card:hover {
+  box-shadow: 0 16px 32px -18px rgba(43, 58, 34, 0.4);
+}
+
+/* Dashboard action buttons */
+.dashboard-page button {
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.dashboard-page button:hover {
+  transform: translateY(-1px);
+}
+
+.dashboard-page button:active {
+  transform: scale(0.97);
+}
+
+/* Tables */
+.dashboard-page table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.dashboard-page tbody tr {
+  transition: background-color 0.18s ease;
+}
+
+.dashboard-page tbody tr:hover {
+  background-color: rgba(43, 58, 34, 0.035);
+}
+
+/* Forms */
+.dashboard-page input,
+.dashboard-page select,
+.dashboard-page textarea {
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.dashboard-page input:focus,
+.dashboard-page select:focus,
+.dashboard-page textarea:focus {
+  transform: translateY(-1px);
+  border-color: var(--leaf);
+  box-shadow: 0 6px 16px -12px rgba(43, 58, 34, 0.55);
+}
+
+/* Product / order rows */
+.product-row,
+.order-row,
+.user-row {
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.product-row:hover,
+.order-row:hover,
+.user-row:hover {
+  transform: translateX(2px);
+}
+
+/* Status badges */
+.status-badge,
+.badge {
+  transition: transform 0.18s ease;
+}
+
+.status-badge:hover,
+.badge:hover {
+  transform: scale(1.04);
+}
+
+/* Dashboard mobile */
+@media (max-width: 700px) {
+
+  .dashboard-page {
+    padding-bottom: 28px;
+  }
+
+  .stat-card:hover,
+  .panel-card:hover {
+    transform: none;
+  }
+
+  .dashboard-page table {
+    min-width: 620px;
+  }
+
+  .dashboard-table-wrap,
+  .table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .product-row:hover,
+  .order-row:hover,
+  .user-row:hover {
+    transform: none;
+  }
+}
+/* ============================================================
+   ACCESSIBILITY + USER-FRIENDLY POLISH
+   ============================================================ */
+
+/* Clear keyboard focus */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid rgba(43, 58, 34, 0.35);
+  outline-offset: 3px;
+}
+
+/* Make interactive elements easier to tap */
+button,
+a,
+select,
+input[type="checkbox"],
+input[type="radio"] {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Prevent accidental text selection on buttons */
+button {
+  user-select: none;
+}
+
+/* Disabled controls should clearly look disabled */
+button:disabled,
+input:disabled,
+select:disabled,
+textarea:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Better form labels */
+label {
+  line-height: 1.4;
+}
+
+/* Better readability for helper text */
+.help-text,
+.form-hint,
+.muted,
+.text-muted {
+  line-height: 1.5;
+}
+
+/* Improve clickable icons */
+.icon-btn,
+.wish-btn,
+.qty-btn {
+  min-width: 40px;
+  min-height: 40px;
+}
+
+/* Don't let images create awkward gaps */
+img {
+  max-width: 100%;
+}
+
+/* Smooth anchor navigation */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Better touch behavior on cards/buttons */
+button,
+a,
+.card,
+.w-chip {
+  touch-action: manipulation;
+}
+
+/* Mobile touch targets */
+@media (max-width: 600px) {
+
+  button,
+  .icon-btn,
+  .wish-btn,
+  .qty-btn {
+    min-height: 42px;
+  }
+
+  input,
+  select,
+  textarea {
+    min-height: 42px;
+  }
+}
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

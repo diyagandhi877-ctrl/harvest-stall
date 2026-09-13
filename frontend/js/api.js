@@ -82,11 +82,12 @@ const Api = {
   removeCartItem: (itemId) => apiRequest(`/cart/items/${itemId}`, { method: "DELETE" }),
   clearCart: () => apiRequest("/cart", { method: "DELETE" }),
 
-  // ---- orders ----
-  checkout: (payload) => apiRequest("/orders/checkout", { method: "POST", body: payload }),
-  myOrders: () => apiRequest("/orders/my"),
-  farmerOrders: (status) => apiRequest(`/orders/farmer/list${status ? `?status=${status}` : ""}`),
-  updateOrderStatus: (id, payload) => apiRequest(`/orders/${id}/status`, { method: "PATCH", body: payload }),
+// ---- orders ----
+checkout: (payload) => apiRequest("/orders/checkout", { method: "POST", body: payload }),
+testPayment: (payload) => apiRequest("/orders/test-payment", { method: "POST", body: payload }),
+myOrders: () => apiRequest("/orders/my"),
+farmerOrders: (status) => apiRequest(`/orders/farmer/list${status ? `?status=${status}` : ""}`),
+updateOrderStatus: (id, payload) => apiRequest(`/orders/${id}/status`, { method: "PATCH", body: payload }),
 
   // ---- farmer dashboard ----
   farmerDashboard: () => apiRequest("/farmer/dashboard"),
